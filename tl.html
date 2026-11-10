@@ -12,6 +12,7 @@ body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-fa
 h1, h2, h3 { margin: 0; font-weight: 600; }
 .topbar { background: #0c1f4d; border-bottom: 1px solid #0c1f4d; position: sticky; top: 0; z-index: 50; }
 .topbar-inner { max-width: 900px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; }
+body.srv-open .topbar-inner, body.srv-open .page { max-width: none; }
 .brand-logo { height: 52px; width: auto; display: block; }
 .srv-btn { background: transparent; border: 1px solid rgba(255,255,255,.45); color: #fff; font-size: 13px; font-weight: 600; padding: 10px 18px; border-radius: 8px; cursor: pointer; }
 .srv-btn:hover { background: rgba(255,255,255,.12); }
@@ -57,34 +58,37 @@ button.link { background: none; border: none; color: var(--primary); padding: 0;
 .check span { font-size: 14px; font-weight: 500; }
 .banner { background: #fee2e2; color: var(--danger); padding: 14px; border-radius: 8px; font-size: 14px; margin: 20px 32px 0; border: 1px solid #fecaca; text-align: center; font-weight: 500; }
 [hidden] { display: none !important; }
-.srv-panel { background: var(--card); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-.srv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; flex-wrap: wrap; gap: 12px; }
+.srv-panel { background: var(--card); border-radius: 16px; padding: 20px 20px 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+.srv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; flex-wrap: wrap; gap: 12px; }
 .srv-header h2 { color: var(--primary-dark); font-size: 22px; }
 .srv-header p { margin: 4px 0 0; font-size: 13px; color: var(--text-muted); }
 .srv-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 button.excel { background: #0f7a3a; color: #fff; border: none; padding: 10px 16px; font-size: 13px; }
 button.excel:hover { background: #0b5e2c; }
 button.excel:disabled { opacity: .55; cursor: not-allowed; }
-.srv-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-.search-box { flex: 1; min-width: 220px; margin: 0; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
-.srv-count { font-size: 13px; font-weight: 600; color: var(--primary-dark); background: #e0f2fe; border-radius: 999px; padding: 8px 12px; white-space: nowrap; }
-.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; display: none; }
-@media (min-width: 769px) { .table-wrap { display: block; } }
-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-th { background: #0c1f4d; padding: 12px 14px; font-weight: 600; color: #fff; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
-td { padding: 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-tbody tr:last-child td { border-bottom: none; }
-tbody tr { cursor: pointer; }
-tbody tr:hover { background: #f4f9fd; }
+.filters { display: grid; grid-template-columns: minmax(240px, 1.6fr) repeat(3, minmax(150px, .7fr)) auto; gap: 10px; margin-bottom: 12px; align-items: end; }
+.filters input, .filters select { width: 100%; margin: 0; padding: 11px 12px; font-size: 14px; }
+.filters .ghost { height: 44px; white-space: nowrap; }
+@media (max-width: 980px) { .filters { grid-template-columns: 1fr 1fr; } }
+.srv-meta { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+.srv-count, .srv-selected { font-size: 13px; font-weight: 600; color: var(--primary-dark); background: #e0f2fe; border-radius: 999px; padding: 6px 12px; }
+.scroll-hint { margin: 0 0 8px; font-size: 12px; color: var(--text-muted); }
+.table-wrap { display: block; overflow: auto; max-height: calc(100vh - 250px); border: 1px solid var(--border); border-radius: 12px; }
+.table-wrap table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; font-size: 13px; }
+.table-wrap th { position: sticky; top: 0; z-index: 2; background: #0c1f4d; color: #fff; padding: 11px 12px; font-weight: 600; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; cursor: pointer; user-select: none; }
+.table-wrap th.no-sort { cursor: default; }
+.table-wrap td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: top; background: #fff; white-space: nowrap; }
+.table-wrap td.wrap { white-space: normal; min-width: 240px; max-width: 380px; line-height: 1.45; }
+.table-wrap tbody tr:hover td { background: #f4f9fd; }
+.table-wrap tbody tr.is-selected td { background: #e7f2fb; }
+.table-wrap .pin { position: sticky; left: 0; z-index: 1; min-width: 46px; }
+.table-wrap th.pin { z-index: 3; left: 0; }
+.table-wrap .pin-2 { position: sticky; left: 46px; z-index: 1; box-shadow: 8px 0 8px -8px rgba(15, 23, 42, .45); }
+.table-wrap th.pin-2 { z-index: 3; }
+.table-wrap input { width: 16px; height: 16px; margin: 0; }
+.sort-mark { opacity: .75; font-size: 10px; }
 .kayit-no { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700; color: #0c1f4d; background: #e0f2fe; border-radius: 6px; padding: 4px 8px; letter-spacing: .03em; }
 .firm { font-weight: 650; }
-.muted { color: var(--text-muted); font-size: 12px; display: block; margin-top: 2px; }
-.cards { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
-@media (min-width: 769px) { .cards { display: none; } }
-.cards li { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; }
-.card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
-.cards li strong { color: var(--primary-dark); font-size: 16px; display: block; }
-.cards li span { font-size: 13px; color: var(--text-muted); display: block; margin-top: 3px; }
 .empty-state { text-align: center; padding: 28px 12px; color: var(--text-muted); }
 dialog { border: none; border-radius: 16px; padding: 0; width: calc(100% - 32px); max-width: 600px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); background: var(--card); color: var(--text); }
 dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
@@ -154,7 +158,7 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
           <span>Dosya seçmek için tıklayın veya sürükleyin</span>
           <small>PDF, Word, Excel veya Görsel (Max 8MB, 2 Adet)</small>
-          <input id="catalog" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.xls,.xlsx,application/pdf,image/jpeg,image/png,image/webp" />
+          <input id="catalog" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.heif,.doc,.docx,.xls,.xlsx,application/pdf,image/jpeg,image/png,image/webp,image/heic,image/heif" />
         </label>
         <ul class="files" id="file-list"></ul>
         <small class="err" id="err-files" hidden></small>
@@ -187,26 +191,33 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
     <div class="srv-header">
       <div>
         <h2>Tedarikçi Listesi</h2>
-        <p>Numara kayıt sırasındadır. T-0001 en eski kayıttır. Satıra tıklayınca tüm detay açılır.</p>
+        <p>T-0001 en eski kayıttır. Başlığa tıklayınca sütun sıralanır. Satıra tıklayınca kayıt açılır.</p>
       </div>
       <div class="srv-actions">
-        <button class="excel" id="export-excel" type="button">Excel'e Aktar</button>
+        <button class="excel" id="export-excel" type="button">Görünenleri Aktar</button>
         <button class="ghost" id="srv-logout" type="button">Oturumu Kapat</button>
       </div>
     </div>
-    <div class="srv-tools">
-      <input class="search-box" id="search" type="search" placeholder="Kayıt no, firma, yetkili, telefon veya il arayın..." />
-      <span class="srv-count" id="srv-count">0 kayıt</span>
+    <div class="filters">
+      <input id="search" type="search" placeholder="Kayıt no, firma, yetkili, telefon, adres, faaliyet veya not ara..." />
+      <select id="filter-country" aria-label="Ülke filtresi"><option value="">Tüm ülkeler</option></select>
+      <select id="filter-city" aria-label="İl filtresi"><option value="">Tüm iller</option></select>
+      <select id="filter-catalog" aria-label="Katalog filtresi"><option value="">Katalog: tümü</option><option value="var">Katalogu olanlar</option><option value="yok">Katalogu olmayanlar</option></select>
+      <button class="ghost" id="clear-filters" type="button">Temizle</button>
     </div>
+    <div class="srv-meta">
+      <span class="srv-count" id="srv-count">0 kayıt</span>
+      <span class="srv-selected" id="srv-selected">Seçim yok</span>
+    </div>
+    <p class="scroll-hint">Tüm sütunlar yanyana durur. Sığmayanlar için tabloyu yana kaydırın.</p>
     <p class="banner" id="list-error" hidden></p>
-    <p class="empty-state" id="list-empty" hidden>Henüz kayıtlı tedarikçi bulunmuyor.</p>
-    <div class="table-wrap">
+    <p class="empty-state" id="list-empty" hidden>Bu filtreye uyan tedarikçi yok.</p>
+    <div class="table-wrap" id="table-wrap">
       <table>
-        <thead><tr><th>Kayıt No</th><th>Firma</th><th>Yetkili</th><th>Telefon</th><th>İl</th><th>Tarih</th><th>Saat</th></tr></thead>
+        <thead id="record-head"></thead>
         <tbody id="record-rows"></tbody>
       </table>
     </div>
-    <ul class="cards" id="record-cards"></ul>
   </section>
 </main>
 <dialog id="kvkk-dialog">
@@ -231,7 +242,7 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, collection, runTransaction, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref as storageRef, uploadBytes, getBytes } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getStorage, ref as storageRef, uploadBytes, getBytes, listAll, getMetadata } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCxNyB1lb-Zs7ZFqrvRLZIHG7oR91T6DHM",
@@ -244,8 +255,8 @@ const firebaseConfig = {
 const SRV_EMAIL = "srv@iceinox.com";
 const MAX_FILES = 2;
 const MAX_FILE_SIZE = 8 * 1024 * 1024;
-const ALLOWED = new Set(["application/pdf","image/jpeg","image/png","image/webp","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]);
-const EXT = { pdf:"application/pdf", jpg:"image/jpeg", jpeg:"image/jpeg", png:"image/png", webp:"image/webp", doc:"application/msword", docx:"application/vnd.openxmlformats-officedocument.wordprocessingml.document", xls:"application/vnd.ms-excel", xlsx:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" };
+const ALLOWED = new Set(["application/pdf","image/jpeg","image/jpg","image/png","image/webp","image/heic","image/heif","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]);
+const EXT = { pdf:"application/pdf", jpg:"image/jpeg", jpeg:"image/jpeg", png:"image/png", webp:"image/webp", heic:"image/heic", heif:"image/heif", doc:"application/msword", docx:"application/vnd.openxmlformats-officedocument.wordprocessingml.document", xls:"application/vnd.ms-excel", xlsx:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" };
 const LEGAL = ["anonimsirketi","limitedsirketi","ltdsti","limited","anonim","ltd","sti","as"];
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -296,8 +307,20 @@ function phoneKey(input) {
   if (digits.startsWith("0") && digits.length === 11) digits = digits.slice(1);
   return digits;
 }
-function fileType(file) { if (ALLOWED.has(file.type)) return file.type; return EXT[(file.name.split(".").pop() || "").toLowerCase()] || ""; }
-function objectName(file, index) { const ext = (file.name.split(".").pop() || "dosya").toLowerCase(); return `${Date.now()}-${index}.${/^[a-z0-9]+$/.test(ext) ? ext : "dosya"}`; }
+function fileType(file) {
+  const ext = (file.name.split(".").pop() || "").toLowerCase();
+  if (EXT[ext]) return EXT[ext];
+  if (file.type === "image/jpg" || file.type === "image/pjpeg") return "image/jpeg";
+  return ALLOWED.has(file.type) ? file.type : "";
+}
+function objectName(file, index) {
+  const ext = (file.name.split(".").pop() || "dosya").toLowerCase();
+  return `k${index}.${/^[a-z0-9]+$/.test(ext) ? ext : "dosya"}`;
+}
+function safeFileName(name) {
+  const clean = String(name || "katalog").replace(/[\u0000-\u001f]/g, "").trim();
+  return (clean || "katalog").slice(0, 120);
+}
 function addRow(listId, type, placeholder) {
   const list = $(listId); if (list.children.length >= 8) return;
   const row = document.createElement("div"); row.className = "repeat-row";
@@ -385,23 +408,32 @@ $("supplier-form").onsubmit = async (event) => {
     const supplierRef = doc(collection(db, "suppliers"));
     const supplierId = supplierRef.id;
     const keyIds = phones.map((phone) => `${key}__${phone}`);
-    const catalogs = selectedFiles.map((file, index) => ({ name: file.name.slice(0, 120), size: file.size, contentType: fileType(file), storagePath: `catalogs/${user.uid}/${supplierId}/${objectName(file, index)}` }));
+    const catalogs = selectedFiles.map((file, index) => ({ name: safeFileName(file.name), size: file.size, contentType: fileType(file), storagePath: `catalogs/${user.uid}/${supplierId}/${objectName(file, index)}` }));
     const saved = { firstName, lastName, companyName, taxOffice, taxNumber, website, phones, emails, country, city, district, address, products, notes, catalogs };
-    await runTransaction(db, async (tx) => {
+    const commit = (catalogList) => runTransaction(db, async (tx) => {
       const usageRef = doc(db, "usage", user.uid);
       const usageSnap = await tx.get(usageRef);
       const count = usageSnap.exists() ? Number(usageSnap.data().count) : 0;
       if (count >= 10) throw new Error("Bu tarayıcıdan en fazla 10 kayıt gönderilebilir.");
       tx.set(usageRef, { count: count + 1, updatedAt: serverTimestamp() });
-      tx.set(supplierRef, { ...saved, companyKey: key, phoneKeys: phones, kvkkAccepted: true, kvkkAcceptedAt: serverTimestamp(), createdAt: serverTimestamp(), createdBy: user.uid, keyIds });
+      tx.set(supplierRef, { ...saved, catalogs: catalogList, companyKey: key, phoneKeys: phones, kvkkAccepted: true, kvkkAcceptedAt: serverTimestamp(), createdAt: serverTimestamp(), createdBy: user.uid, keyIds });
       keyIds.forEach((keyId) => tx.set(doc(db, "supplierKeys", keyId), { supplierId, createdAt: serverTimestamp() }));
     });
+    try {
+      await commit(catalogs);
+    } catch (error) {
+      if (!catalogs.length || !codeOf(error).includes("permission-denied")) throw error;
+      await commit([]);
+    }
+    pendingFiles = selectedFiles.map((file, index) => ({ file, ...catalogs[index] }));
     let warning = "";
     try {
-      for (let index = 0; index < selectedFiles.length; index += 1) {
-        await uploadBytes(storageRef(storage, catalogs[index].storagePath), selectedFiles[index], { contentType: catalogs[index].contentType });
-      }
-    } catch { warning = "Kayıt listeye alındı. Katalog dosyası yüklenemedi."; }
+      await uploadPending();
+      pendingFiles = [];
+    } catch (error) {
+      console.error(error);
+      warning = "Firma kaydı alındı. Dosya henüz yüklenemedi. Aşağıdan yeniden deneyin. Olmazsa Firebase Storage kurallarını yayınlayın.";
+    }
     showLetter(saved, warning);
   } catch (error) {
     console.error(error);
@@ -420,6 +452,28 @@ function showLetter(data, warning) {
   const lines = [["Yetkili", `${data.firstName} ${data.lastName}`], ["Firma", data.companyName], ["Vergi", `${data.taxOffice || "—"} / ${data.taxNumber || "—"}`], ["Telefon", data.phones.join(", ")], ["E-posta", data.emails.join(", ")], ["Adres", `${data.country} / ${data.city} / ${data.district} — ${data.address}`], ["Faaliyet", data.products], ["Katalog", data.catalogs.length ? data.catalogs.map((file) => file.name).join(", ") : "Eklenmedi"]];
   for (const [label, value] of lines) body.append(...detailLine(label, value));
   showErr("letter-warning", warning);
+  const oldRetry = $("retry-upload");
+  if (oldRetry) oldRetry.remove();
+  if (!warning || !pendingFiles.length) return;
+  const retry = document.createElement("button");
+  retry.id = "retry-upload";
+  retry.className = "primary";
+  retry.type = "button";
+  retry.textContent = "Dosyayı yeniden yükle";
+  retry.onclick = async () => {
+    retry.disabled = true;
+    try {
+      await uploadPending();
+      pendingFiles = [];
+      showErr("letter-warning", "");
+      retry.remove();
+    } catch (error) {
+      console.error(error);
+      showErr("letter-warning", "Dosya yine yüklenemedi. Storage kurallarını yayınlayıp aynı oturumda yeniden deneyin.");
+      retry.disabled = false;
+    }
+  };
+  $("letter-view").insertBefore(retry, $("another"));
 }
 $("another").onclick = () => {
   $("letter-view").hidden = true; $("supplier-form").hidden = false; $("lede").hidden = false;
@@ -439,6 +493,12 @@ $("srv-form").onsubmit = async (event) => {
 $("srv-logout").onclick = () => signOut(auth);
 
 let shownRecords = [];
+let pendingFiles = [];
+async function uploadPending() {
+  for (const item of pendingFiles) {
+    await uploadBytes(storageRef(storage, item.storagePath), item.file, { contentType: item.contentType, customMetadata: { originalName: item.name } });
+  }
+}
 function createdDate(value) { return value?.toDate ? value.toDate() : null; }
 function istanbulParts(value) {
   const date = createdDate(value);
@@ -500,7 +560,7 @@ function workbookBlob(matrix) {
   return zipStore(Object.entries(files).map(([name, xml]) => ({ name, data: encoder.encode(xml) })));
 }
 function exportMatrix(list) {
-  const ordered = [...list].sort((a, b) => a.kayitNo.localeCompare(b.kayitNo, "tr"));
+  const ordered = list;
   const phoneCount = Math.max(1, ...ordered.map((record) => (record.phones || []).length));
   const emailCount = Math.max(1, ...ordered.map((record) => (record.emails || []).length));
   const headers = ["Kayıt No", "Kayıt Tarihi", "Kayıt Saati", "Ad", "Soyad", "Firma Adı", "Vergi Dairesi", "Vergi / TC No", "Web Sitesi"];
@@ -523,14 +583,22 @@ function exportMatrix(list) {
   });
   return [headers, ...rows];
 }
-function downloadExcel() {
-  if (!shownRecords.length) return;
-  const stamp = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Istanbul", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(workbookBlob(exportMatrix(shownRecords)));
-  link.download = `ICEINOX-tedarikciler-${stamp}.xlsx`;
-  link.click();
-  URL.revokeObjectURL(link.href);
+async function downloadExcel() {
+  const picked = shownRecords.filter((record) => selectedIds.has(record.id));
+  const source = picked.length ? picked : shownRecords;
+  if (!source.length) return;
+  const button = $("export-excel");
+  button.disabled = true;
+  try {
+    const enriched = [];
+    for (const record of source) enriched.push({ ...record, catalogs: await catalogFiles(record) });
+    const stamp = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Istanbul", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(workbookBlob(exportMatrix(enriched)));
+    link.download = `ICEINOX-tedarikciler-${stamp}.xlsx`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  } finally { button.disabled = shownRecords.length === 0; }
 }
 async function loadRecords() {
   showErr("list-error", "");
@@ -538,40 +606,184 @@ async function loadRecords() {
     const snap = await getDocs(query(collection(db, "suppliers"), orderBy("createdAt", "desc")));
     recordsCache = snap.docs.map((item) => ({ id: item.id, ...item.data() }));
     stampNumbers(recordsCache);
-    renderRecords(recordsCache);
+    const alive = new Set(recordsCache.map((record) => record.id));
+    selectedIds = new Set([...selectedIds].filter((id) => alive.has(id)));
+    fillFilters();
+    applyView();
   } catch (error) { console.error(error); showErr("list-error", "Kayıtlar yüklenemedi. SRV oturumunu ve kuralları kontrol edin."); }
+}
+const COLUMNS = [
+  { key: "kayitNo", label: "Kayıt No", pin: "pin-2" },
+  { key: "date", label: "Tarih" },
+  { key: "time", label: "Saat" },
+  { key: "firstName", label: "Ad" },
+  { key: "lastName", label: "Soyad" },
+  { key: "companyName", label: "Firma" },
+  { key: "phones", label: "Telefon" },
+  { key: "emails", label: "E-posta" },
+  { key: "taxOffice", label: "Vergi Dairesi" },
+  { key: "taxNumber", label: "Vergi / TC" },
+  { key: "website", label: "Web" },
+  { key: "country", label: "Ülke" },
+  { key: "city", label: "İl" },
+  { key: "district", label: "İlçe" },
+  { key: "address", label: "Açık Adres", wrap: true },
+  { key: "products", label: "Faaliyet / Açıklama", wrap: true },
+  { key: "notes", label: "Not", wrap: true },
+  { key: "catalogs", label: "Katalog" }
+];
+let sortState = { key: "kayitNo", dir: "desc" };
+let selectedIds = new Set();
+function cellText(record, key) {
+  const when = istanbulParts(record.createdAt);
+  if (key === "date") return when.date;
+  if (key === "time") return when.time;
+  if (key === "phones") return (record.phones || []).join(", ");
+  if (key === "emails") return (record.emails || []).join(", ");
+  if (key === "catalogs") return (record.catalogs || []).map((file) => file.name).filter(Boolean).join(", ");
+  return record[key] || "";
+}
+function fillFilters() {
+  const keep = (id, values, label) => {
+    const el = $(id);
+    const current = el.value;
+    el.replaceChildren();
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = label;
+    el.append(first);
+    for (const value of [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b, "tr"))) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      el.append(option);
+    }
+    if ([...el.options].some((option) => option.value === current)) el.value = current;
+  };
+  keep("filter-country", recordsCache.map((record) => record.country || ""), "Tüm ülkeler");
+  keep("filter-city", recordsCache.map((record) => record.city || ""), "Tüm iller");
+}
+function applyView() {
+  const term = $("search").value.toLocaleLowerCase("tr-TR").trim();
+  const country = $("filter-country").value;
+  const city = $("filter-city").value;
+  const catalog = $("filter-catalog").value;
+  const list = recordsCache.filter((record) => {
+    if (country && (record.country || "") !== country) return false;
+    if (city && (record.city || "") !== city) return false;
+    const hasCatalog = (record.catalogs || []).length > 0;
+    if (catalog === "var" && !hasCatalog) return false;
+    if (catalog === "yok" && hasCatalog) return false;
+    if (!term) return true;
+    const haystack = [record.kayitNo, record.companyName, record.firstName, record.lastName, record.country, record.city, record.district, record.address, record.taxOffice, record.taxNumber, record.website, record.products, record.notes, ...(record.phones || []), ...(record.emails || [])].join(" ").toLocaleLowerCase("tr-TR");
+    return haystack.includes(term);
+  });
+  list.sort((a, b) => {
+    const left = sortState.key === "date" || sortState.key === "time" ? (createdDate(a.createdAt)?.getTime() || 0) : cellText(a, sortState.key).toLocaleLowerCase("tr-TR");
+    const right = sortState.key === "date" || sortState.key === "time" ? (createdDate(b.createdAt)?.getTime() || 0) : cellText(b, sortState.key).toLocaleLowerCase("tr-TR");
+    const compared = typeof left === "number" ? left - right : String(left).localeCompare(String(right), "tr");
+    return sortState.dir === "asc" ? compared : -compared;
+  });
+  renderRecords(list);
+}
+function updateExportLabel() {
+  const count = shownRecords.filter((record) => selectedIds.has(record.id)).length;
+  $("export-excel").textContent = count ? `Seçilenleri Aktar (${count})` : "Görünenleri Aktar";
+  $("export-excel").disabled = shownRecords.length === 0;
+  $("srv-selected").textContent = count ? `${count} satır seçili` : "Seçim yok";
 }
 function renderRecords(list) {
   shownRecords = list;
-  const rows = $("record-rows"); const cards = $("record-cards");
-  rows.replaceChildren(); cards.replaceChildren();
+  const wrap = $("table-wrap");
+  const scrollLeft = wrap.scrollLeft;
+  const scrollTop = wrap.scrollTop;
+  const head = $("record-head");
+  const rows = $("record-rows");
+  head.replaceChildren();
+  rows.replaceChildren();
   $("list-empty").hidden = list.length > 0;
-  $("export-excel").disabled = list.length === 0;
   $("srv-count").textContent = list.length === recordsCache.length ? `${recordsCache.length} kayıt` : `${list.length} / ${recordsCache.length} kayıt`;
-  for (const record of list) {
-    const when = istanbulParts(record.createdAt);
-    const who = `${record.firstName || ""} ${record.lastName || ""}`.trim();
-    const phone = (record.phones || []).join(", ");
-    const tr = document.createElement("tr");
-    const no = document.createElement("td"); const badge = document.createElement("span"); badge.className = "kayit-no"; badge.textContent = record.kayitNo; no.append(badge);
-    const firm = document.createElement("td"); firm.className = "firm"; firm.textContent = record.companyName || "";
-    const person = document.createElement("td"); person.textContent = who;
-    const tel = document.createElement("td"); tel.textContent = phone;
-    const city = document.createElement("td"); city.textContent = record.city || "";
-    const day = document.createElement("td"); day.textContent = when.date;
-    const hour = document.createElement("td"); hour.textContent = when.time;
-    tr.append(no, firm, person, tel, city, day, hour);
-    tr.onclick = () => showDetail(record); rows.append(tr);
-    const item = document.createElement("li");
-    const top = document.createElement("div"); top.className = "card-top";
-    const badge2 = document.createElement("span"); badge2.className = "kayit-no"; badge2.textContent = record.kayitNo;
-    const clock = document.createElement("span"); clock.textContent = `${when.date} · ${when.time}`;
-    top.append(badge2, clock);
-    const strong = document.createElement("strong"); strong.textContent = record.companyName || "";
-    const personLine = document.createElement("span"); personLine.textContent = who;
-    const phoneLine = document.createElement("span"); phoneLine.textContent = `${phone}${record.city ? " · " + record.city : ""}`;
-    item.append(top, strong, personLine, phoneLine); item.onclick = () => showDetail(record); cards.append(item);
+  const headRow = document.createElement("tr");
+  const pickHead = document.createElement("th");
+  pickHead.className = "no-sort pin";
+  const pickAll = document.createElement("input");
+  pickAll.type = "checkbox";
+  pickAll.checked = list.length > 0 && list.every((record) => selectedIds.has(record.id));
+  pickAll.onclick = (event) => {
+    event.stopPropagation();
+    for (const record of list) { if (pickAll.checked) selectedIds.add(record.id); else selectedIds.delete(record.id); }
+    renderRecords(list);
+  };
+  pickHead.append(pickAll);
+  headRow.append(pickHead);
+  for (const column of COLUMNS) {
+    const th = document.createElement("th");
+    if (column.pin) th.classList.add(column.pin);
+    th.textContent = column.label;
+    const mark = document.createElement("span");
+    mark.className = "sort-mark";
+    mark.textContent = sortState.key === column.key ? (sortState.dir === "asc" ? " ▲" : " ▼") : " ↕";
+    th.append(mark);
+    th.onclick = () => {
+      if (sortState.key === column.key) sortState.dir = sortState.dir === "asc" ? "desc" : "asc";
+      else { sortState.key = column.key; sortState.dir = "asc"; }
+      applyView();
+    };
+    headRow.append(th);
   }
+  head.append(headRow);
+  for (const record of list) {
+    const tr = document.createElement("tr");
+    if (selectedIds.has(record.id)) tr.classList.add("is-selected");
+    const pick = document.createElement("td");
+    pick.className = "pin";
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.checked = selectedIds.has(record.id);
+    box.onclick = (event) => {
+      event.stopPropagation();
+      if (box.checked) selectedIds.add(record.id); else selectedIds.delete(record.id);
+      tr.classList.toggle("is-selected", box.checked);
+      pickAll.checked = list.every((item) => selectedIds.has(item.id));
+      updateExportLabel();
+    };
+    pick.append(box);
+    tr.append(pick);
+    for (const column of COLUMNS) {
+      const td = document.createElement("td");
+      if (column.pin) td.classList.add(column.pin);
+      if (column.wrap) td.classList.add("wrap");
+      const text = cellText(record, column.key) || "—";
+      td.title = text;
+      if (column.key === "kayitNo") { const badge = document.createElement("span"); badge.className = "kayit-no"; badge.textContent = text; td.append(badge); }
+      else { if (column.key === "companyName") td.classList.add("firm"); td.textContent = text; }
+      tr.append(td);
+    }
+    tr.onclick = () => { void showDetail(record); };
+    rows.append(tr);
+  }
+  updateExportLabel();
+  wrap.scrollLeft = scrollLeft;
+  wrap.scrollTop = scrollTop;
+}
+async function catalogFiles(record) {
+  if (record.catalogs?.length) return record.catalogs;
+  if (!record.createdBy || !record.id) return [];
+  try {
+    const listed = await listAll(storageRef(storage, `catalogs/${record.createdBy}/${record.id}`));
+    const files = [];
+    for (const item of listed.items) {
+      let name = item.name;
+      let contentType = "";
+      try {
+        const meta = await getMetadata(item);
+        name = meta.customMetadata?.originalName || name;
+        contentType = meta.contentType || "";
+      } catch { /* dosya adı yedekte kalır */ }
+      files.push({ name, contentType, storagePath: item.fullPath });
+    }
+    return files;
+  } catch { return []; }
 }
 async function downloadCatalog(file, host) {
   if (!String(file.storagePath || "").startsWith("catalogs/")) return;
@@ -581,25 +793,35 @@ async function downloadCatalog(file, host) {
     const link = document.createElement("a"); link.href = url; link.download = String(file.name || "katalog").replace(/[^\w.\- ]+/g, "").slice(0, 80) || "katalog"; link.click(); URL.revokeObjectURL(url);
   } catch { const note = document.createElement("span"); note.className = "err"; note.textContent = " Dosya açılamadı."; host.append(note); }
 }
-function showDetail(record) {
+async function showDetail(record) {
   const when = istanbulParts(record.createdAt);
   $("detail-title").textContent = `${record.kayitNo || "Kayıt"} · ${record.companyName || ""}`;
   const body = $("detail-body"); body.replaceChildren();
   const fields = [["Kayıt no", record.kayitNo || "—"], ["Kayıt tarihi", when.date], ["Kayıt saati", when.time], ["Yetkili", `${record.firstName || ""} ${record.lastName || ""}`.trim()], ["Firma", record.companyName || ""], ["Vergi", `${record.taxOffice || "—"} / ${record.taxNumber || "—"}`], ["Web", record.website || "—"], ["Telefon", (record.phones || []).join(", ")], ["E-posta", (record.emails || []).join(", ")], ["Adres", `${record.country || ""} / ${record.city || ""} / ${record.district || ""} — ${record.address || ""}`], ["Faaliyet", record.products || ""], ["Not", record.notes || "—"]];
   for (const [label, value] of fields) { const p = document.createElement("p"); const strong = document.createElement("strong"); strong.textContent = `${label}: `; p.append(strong, document.createTextNode(value)); body.append(p); }
   const catalogs = document.createElement("p"); const title = document.createElement("strong"); title.textContent = "Katalog: "; catalogs.append(title);
-  if (!(record.catalogs || []).length) catalogs.append(document.createTextNode("Eklenmedi"));
-  else for (const file of record.catalogs) { const button = document.createElement("button"); button.type = "button"; button.className = "link"; button.textContent = file.name || "katalog"; button.onclick = () => downloadCatalog(file, catalogs); catalogs.append(button, document.createTextNode(" ")); }
+  catalogs.append(document.createTextNode("Yükleniyor..."));
   body.append(catalogs); $("detail-dialog").showModal();
+  const files = await catalogFiles(record);
+  catalogs.replaceChildren(title);
+  if (!files.length) catalogs.append(document.createTextNode("Eklenmedi"));
+  else for (const file of files) { const button = document.createElement("button"); button.type = "button"; button.className = "link"; button.textContent = file.name || "katalog"; button.onclick = () => downloadCatalog(file, catalogs); catalogs.append(button, document.createTextNode(" ")); }
 }
-$("export-excel").onclick = downloadExcel;
-$("search").oninput = (event) => {
-  const term = event.target.value.toLocaleLowerCase("tr-TR").trim();
-  if (!term) return renderRecords(recordsCache);
-  renderRecords(recordsCache.filter((record) => [record.kayitNo, record.companyName, record.firstName, record.lastName, record.city, record.taxNumber, record.taxOffice, record.products, ...(record.phones || []), ...(record.emails || [])].join(" ").toLocaleLowerCase("tr-TR").includes(term)));
+$("export-excel").onclick = () => { void downloadExcel(); };
+$("search").oninput = () => applyView();
+$("filter-country").onchange = () => applyView();
+$("filter-city").onchange = () => applyView();
+$("filter-catalog").onchange = () => applyView();
+$("clear-filters").onclick = () => {
+  $("search").value = "";
+  $("filter-country").value = "";
+  $("filter-city").value = "";
+  $("filter-catalog").value = "";
+  applyView();
 };
 onAuthStateChanged(auth, (user) => {
   const srv = user?.email?.toLowerCase() === SRV_EMAIL;
+  document.body.classList.toggle("srv-open", srv);
   $("srv-view").hidden = !srv; $("srv-entry").hidden = srv;
   if (srv) { $("supplier-form").hidden = true; $("letter-view").hidden = true; $("lede").hidden = true; loadRecords(); return; }
   if ($("letter-view").hidden) { $("supplier-form").hidden = false; $("lede").hidden = false; }
