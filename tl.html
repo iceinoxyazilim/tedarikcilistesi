@@ -241,7 +241,7 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, collection, runTransaction, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, collection, runTransaction, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage, ref as storageRef, uploadBytes, getBytes, listAll, getMetadata } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {
@@ -600,17 +600,26 @@ async function downloadExcel() {
     URL.revokeObjectURL(link.href);
   } finally { button.disabled = shownRecords.length === 0; }
 }
+function asList(value) { return Array.isArray(value) ? value : []; }
+function listFailure(error) {
+  const code = String(error?.code || "");
+  if (code.includes("permission-denied")) return "Liste Firestore kuralına takıldı. Storage kuralları bu listeyi açmaz. Firestore Database → Rules ekranına Firestore kurallarını yapıştırıp yayınlayın, sonra SRV ile yeniden girin.";
+  return "Kayıtlar yüklenemedi. (" + (code || error?.message || "bilinmeyen hata") + ")";
+}
 async function loadRecords() {
   showErr("list-error", "");
   try {
-    const snap = await getDocs(query(collection(db, "suppliers"), orderBy("createdAt", "desc")));
+    const snap = await getDocs(collection(db, "suppliers"));
     recordsCache = snap.docs.map((item) => ({ id: item.id, ...item.data() }));
     stampNumbers(recordsCache);
     const alive = new Set(recordsCache.map((record) => record.id));
     selectedIds = new Set([...selectedIds].filter((id) => alive.has(id)));
     fillFilters();
     applyView();
-  } catch (error) { console.error(error); showErr("list-error", "Kayıtlar yüklenemedi. SRV oturumunu ve kuralları kontrol edin."); }
+  } catch (error) {
+    console.error(error);
+    showErr("list-error", listFailure(error));
+  }
 }
 const COLUMNS = [
   { key: "kayitNo", label: "Kayıt No", pin: "pin-2" },
@@ -638,10 +647,11 @@ function cellText(record, key) {
   const when = istanbulParts(record.createdAt);
   if (key === "date") return when.date;
   if (key === "time") return when.time;
-  if (key === "phones") return (record.phones || []).join(", ");
-  if (key === "emails") return (record.emails || []).join(", ");
-  if (key === "catalogs") return (record.catalogs || []).map((file) => file.name).filter(Boolean).join(", ");
-  return record[key] || "";
+  if (key === "phones") return asList(record.phones).join(", ");
+  if (key === "emails") return asList(record.emails).join(", ");
+  if (key === "catalogs") return asList(record.catalogs).map((file) => file && file.name).filter(Boolean).join(", ");
+  const value = record[key];
+  return value == null ? "" : String(value);
 }
 function fillFilters() {
   const keep = (id, values, label) => {
@@ -671,11 +681,11 @@ function applyView() {
   const list = recordsCache.filter((record) => {
     if (country && (record.country || "") !== country) return false;
     if (city && (record.city || "") !== city) return false;
-    const hasCatalog = (record.catalogs || []).length > 0;
+    const hasCatalog = asList(record.catalogs).length > 0;
     if (catalog === "var" && !hasCatalog) return false;
     if (catalog === "yok" && hasCatalog) return false;
     if (!term) return true;
-    const haystack = [record.kayitNo, record.companyName, record.firstName, record.lastName, record.country, record.city, record.district, record.address, record.taxOffice, record.taxNumber, record.website, record.products, record.notes, ...(record.phones || []), ...(record.emails || [])].join(" ").toLocaleLowerCase("tr-TR");
+    const haystack = [record.kayitNo, record.companyName, record.firstName, record.lastName, record.country, record.city, record.district, record.address, record.taxOffice, record.taxNumber, record.website, record.products, record.notes, ...asList(record.phones), ...asList(record.emails)].join(" ").toLocaleLowerCase("tr-TR");
     return haystack.includes(term);
   });
   list.sort((a, b) => {
