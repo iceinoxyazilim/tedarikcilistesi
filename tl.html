@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>İCEİNOX tedarikçi kaydı</title>
+    <meta name="description" content="İCEİNOX tedarikçi kayıt formu. Firma, iletişim, adres ve katalog bilgilerinizi iletin." />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,520;9..144,640&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/site/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="#kayit">
+          <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+            <rect x="1.25" y="1.25" width="29.5" height="29.5" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+            <path d="M9 22.5 V10.5 H15.2 C18.3 10.5 20.4 12.4 20.4 15.1 C20.4 17.8 18.3 19.6 15.2 19.6 H12" fill="none" stroke="currentColor" stroke-width="1.5"></path>
+            <path d="M18.2 22.5 L24 10.5" fill="none" stroke="currentColor" stroke-width="1.5"></path>
+          </svg>
+          <span>
+            <span class="brand-kicker">İCEİNOX</span>
+            <span class="brand-title">Tedarikçi kaydı</span>
+          </span>
+        </a>
+        <button class="text-button" type="button" id="srv-entry">SRV girişi</button>
+      </div>
+    </header>
+
+    <main class="page" id="kayit">
+      <p class="lede" id="lede">Kullanıcı adı ve parola gerekmez. Bilgileriniz listeye işlenir. Listeyi yalnız SRV görür.</p>
+
+      <form class="sheet" id="supplier-form" novalidate>
+        <section class="block">
+          <header class="block-title"><span>01</span><h2>Yetkili</h2></header>
+          <div class="split">
+            <label class="field">
+              <span>Ad</span>
+              <input id="firstName" name="firstName" autocomplete="given-name" />
+              <small class="field-error" id="error-firstName" hidden></small>
+            </label>
+            <label class="field">
+              <span>Soyad</span>
+              <input id="lastName" name="lastName" autocomplete="family-name" />
+              <small class="field-error" id="error-lastName" hidden></small>
+            </label>
+          </div>
+        </section>
+
+        <section class="block">
+          <header class="block-title"><span>02</span><h2>Firma</h2></header>
+          <label class="field">
+            <span>Firma adı</span>
+            <input id="companyName" name="companyName" autocomplete="organization" />
+            <small class="hint">A.Ş. ve Ltd. Şti. ekleri aynı firma sayılır.</small>
+            <small class="field-error" id="error-companyName" hidden></small>
+          </label>
+          <label class="field">
+            <span>Ne üzerine çalışıyorsunuz, ne satıyorsunuz?</span>
+            <textarea id="products" name="products" rows="4" placeholder="Örneğin paslanmaz sac, boru bağlantı elemanları ve proje kesimi."></textarea>
+            <small class="field-error" id="error-products" hidden></small>
+          </label>
+        </section>
+
+        <section class="block">
+          <header class="block-title"><span>03</span><h2>İletişim</h2></header>
+          <div class="field">
+            <span>Telefon</span>
+            <div class="repeat" id="phone-list">
+              <div class="repeat-row">
+                <input type="tel" inputmode="tel" placeholder="05xx xxx xx xx" aria-label="Telefon 1" autocomplete="tel" />
+              </div>
+            </div>
+            <button class="ghost" type="button" id="add-phone">Telefon ekle</button>
+            <small class="field-error" id="error-phones" hidden></small>
+          </div>
+          <div class="field">
+            <span>E-posta</span>
+            <div class="repeat" id="email-list">
+              <div class="repeat-row">
+                <input type="email" inputmode="email" placeholder="firma@ornek.com" aria-label="E-posta 1" autocomplete="email" />
+              </div>
+            </div>
+            <button class="ghost" type="button" id="add-email">E-posta ekle</button>
+            <small class="field-error" id="error-emails" hidden></small>
+          </div>
+        </section>
+
+        <section class="block">
+          <header class="block-title"><span>04</span><h2>Adres</h2></header>
+          <div class="split">
+            <label class="field">
+              <span>Ülke</span>
+              <select id="country" name="country"></select>
+              <small class="field-error" id="error-country" hidden></small>
+            </label>
+            <label class="field" id="country-other-field" hidden>
+              <span>Ülke adı</span>
+              <input id="country-other" placeholder="Ülke adını yazın" />
+            </label>
+            <label class="field">
+              <span>İl</span>
+              <select id="city-select"></select>
+              <input id="city-text" hidden />
+              <small class="field-error" id="error-city" hidden></small>
+            </label>
+            <label class="field">
+              <span>İlçe</span>
+              <select id="district-select"></select>
+              <input id="district-text" hidden />
+              <small class="field-error" id="error-district" hidden></small>
+            </label>
+          </div>
+          <label class="field">
+            <span>Açık adres</span>
+            <textarea id="address" rows="3" placeholder="Mahalle, cadde veya sokak, kapı ve daire numarası" autocomplete="street-address"></textarea>
+            <small class="field-error" id="error-address" hidden></small>
+          </label>
+        </section>
+
+        <section class="block">
+          <header class="block-title"><span>05</span><h2>Not ve katalog</h2></header>
+          <label class="field">
+            <span>Eklemek istediğiniz not</span>
+            <textarea id="notes" rows="3" placeholder="Teslimat şekli, sertifika veya görüşmek istediğiniz ürün grubu."></textarea>
+            <small class="hint">İsteğe bağlı.</small>
+            <small class="field-error" id="error-notes" hidden></small>
+          </label>
+          <div class="field">
+            <span>Katalog</span>
+            <label class="drop" id="drop-zone">
+              <strong>Dosyaları seçin veya buraya bırakın</strong>
+              <span>Katalog varsa ekleyin. Dosya olmadan da kayıt tamamlanır.</span>
+              <input id="catalog" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.xls,.xlsx,application/pdf,image/jpeg,image/png,image/webp" />
+            </label>
+            <small class="hint" id="file-hint">PDF, Word, Excel veya görsel. Dosya başına 8 MB, en fazla 2 dosya.</small>
+            <ul class="files" id="file-list"></ul>
+            <small class="field-error" id="error-files" hidden></small>
+          </div>
+        </section>
+
+        <section class="block">
+          <header class="block-title"><span>06</span><h2>Onay</h2></header>
+          <div class="consent">
+            <div class="consent-row">
+              <p>Kayıt, KVKK aydınlatma metnini açıp onaylamadan listeye eklenmez.</p>
+              <button class="ghost" type="button" id="open-kvkk">Metni aç</button>
+            </div>
+            <label class="check">
+              <input id="kvkk" type="checkbox" disabled />
+              <span id="kvkk-label"></span>
+            </label>
+            <small class="hint" id="kvkk-hint">Onay kutusu, metin açıldıktan sonra kullanılabilir.</small>
+            <small class="field-error" id="error-kvkk" hidden></small>
+          </div>
+        </section>
+
+        <p class="banner" id="form-error" hidden></p>
+        <div class="submit-row">
+          <p>Kaydet dediğinizde kayıt listeye eklenir. Sonradan silinemez.</p>
+          <button class="primary" type="submit" id="save-button">Kaydet</button>
+        </div>
+      </form>
+
+      <article class="letter" id="letter-view" hidden>
+        <div class="letter-rule">
+          <p class="brand-kicker">İCEİNOX</p>
+          <h2>Kaydınız alındı.</h2>
+          <p class="muted" id="letter-date"></p>
+        </div>
+        <div class="letter-body" id="letter-body"></div>
+        <p class="banner" id="letter-warning" hidden></p>
+        <button class="ghost" type="button" id="another">Yeni kayıt oluştur</button>
+      </article>
+
+      <section class="srv" id="srv-view" hidden>
+        <div class="srv-head">
+          <div>
+            <h2>Kim ne kaydetmiş <em>Silinemez</em></h2>
+            <p>Her satır, formu dolduran yetkiliyi ve firmayı gösterir. Bu ekrandan kayıt silinmez ve değiştirilmez.</p>
+          </div>
+          <p class="muted" id="record-count">Yükleniyor</p>
+        </div>
+        <input id="search" type="search" placeholder="Firma, yetkili, telefon veya şehir ara" aria-label="Kayıtlarda ara" />
+        <p class="banner" id="list-error" hidden></p>
+        <p class="muted" id="list-empty" hidden>Henüz kayıt yok.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Firma</th>
+                <th>Yetkili</th>
+                <th>Telefon</th>
+                <th>İl</th>
+                <th>Zaman</th>
+              </tr>
+            </thead>
+            <tbody id="record-rows"></tbody>
+          </table>
+        </div>
+        <ul class="cards" id="record-cards"></ul>
+      </section>
+    </main>
+
+    <dialog id="kvkk-dialog">
+      <form method="dialog">
+        <header>
+          <h2>KVKK aydınlatma metni</h2>
+          <button class="ghost" value="cancel">Kapat</button>
+        </header>
+        <div class="dialog-body" id="kvkk-body"></div>
+      </form>
+    </dialog>
+
+    <dialog id="srv-dialog">
+      <form id="srv-form">
+        <header>
+          <h2>SRV girişi</h2>
+          <button class="ghost" type="button" id="srv-cancel">Kapat</button>
+        </header>
+        <p>Tüm tedarikçi kayıtları bu parolayla açılır.</p>
+        <label class="field">
+          <span>Parola</span>
+          <input id="srv-password" type="password" autocomplete="current-password" required />
+        </label>
+        <p class="banner" id="srv-error" hidden></p>
+        <button class="primary" type="submit" id="srv-submit">Listeyi aç</button>
+      </form>
+    </dialog>
+
+    <dialog id="detail-dialog">
+      <form method="dialog">
+        <header>
+          <h2 id="detail-title">Kayıt</h2>
+          <button class="ghost" value="cancel">Kapat</button>
+        </header>
+        <div class="dialog-body" id="detail-body"></div>
+      </form>
+    </dialog>
+
+    <noscript>
+      <p class="lede">Kayıt formunun çalışması için JavaScript gerekir.</p>
+    </noscript>
+    <script type="module" src="/site/main.ts"></script>
+  </body>
+</html>
