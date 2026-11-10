@@ -2,299 +2,323 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>İCEİNOX tedarikçi kaydı</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>İCEİNOX | Tedarikçi Kayıt Sistemi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,520;9..144,640&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-:root{
-  --ink:#1a1a1a; --muted:#6b6b6b; --line:#d9d6cf; --bg:#f6f4ef; --card:#fffdf8;
-  --accent:#0d3b2e; --danger:#a4262c; --ok:#0d6b3f;
+:root {
+  --primary: #005a9c; /* Kurumsal mavi */
+  --primary-dark: #00427a;
+  --bg: #f4f7f9;
+  --card: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --danger: #e11d48;
+  --success: #059669;
 }
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
-  font-family:'Outfit',system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.5}
-h1,h2,h3,.brand-title{font-family:'Fraunces',Georgia,serif;font-weight:640;letter-spacing:-.01em}
-.topbar{border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:10}
-.topbar-inner{max-width:880px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
-.mark{width:32px;height:32px;color:var(--accent);flex:0 0 32px}
-.brand-kicker{display:block;font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
-.brand-title{display:block;font-size:18px}
-.page{max-width:880px;margin:0 auto;padding:32px 20px 80px}
-.lede{color:var(--muted);margin:0 0 24px;font-size:15px}
-.sheet{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:8px 24px 24px}
-.block{padding:24px 0;border-top:1px solid var(--line)}
-.block:first-child{border-top:none}
-.block-title{display:flex;align-items:baseline;gap:12px;margin:0 0 16px}
-.block-title span{font-family:'Fraunces',serif;font-size:14px;color:var(--muted)}
-.block-title h2{margin:0;font-size:20px}
-.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media (max-width:640px){.split{grid-template-columns:1fr}}
-.field{display:block;margin-bottom:14px}
-.field > span:first-child{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
-input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;
-  background:#fff;font:inherit;color:var(--ink)}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
-textarea{resize:vertical}
-.hint{display:block;color:var(--muted);font-size:12px;margin-top:5px}
-.field-error{display:block;color:var(--danger);font-size:12px;margin-top:5px;font-weight:600}
-.repeat{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
-.repeat-row{display:flex;gap:8px}
-.repeat-row input{flex:1}
-button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 14px}
-button:hover{background:#f1efe8}
-button.primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;padding:12px 22px}
-button.primary:hover{background:#0a2e24}
-button.ghost{background:transparent;border-color:var(--line);color:var(--ink);padding:6px 12px;font-size:13px}
-button.link{background:none;border:none;color:var(--accent);text-decoration:underline;padding:0}
-.text-button{background:none;border:none;color:var(--accent);font-weight:600;font-size:13px}
-.drop{display:block;border:1.5px dashed var(--line);border-radius:12px;padding:20px;text-align:center;cursor:pointer;background:#fff;margin-top:4px}
-.drop:hover,.drop.over{border-color:var(--accent);background:#f3f7f5}
-.drop input{display:none}
-.drop strong{display:block;font-size:14px}
-.drop span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
-.files{list-style:none;padding:0;margin:10px 0 0}
-.files li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;background:#fff;font-size:13px}
-.files button{font-size:12px;padding:2px 8px;color:var(--danger);border-color:transparent;background:none}
-.consent{background:#fbf8f0;border:1px solid var(--line);border-radius:12px;padding:14px}
-.consent-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
-.consent-row p{margin:0;font-size:14px}
-.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;cursor:pointer}
-.check input{margin-top:3px;width:auto}
-.banner{background:#fdecea;color:var(--danger);border:1px solid #f5c2c0;border-radius:10px;padding:10px 14px;font-size:14px;margin:14px 0 0}
-.submit-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:20px;flex-wrap:wrap}
-.submit-row p{margin:0;color:var(--muted);font-size:13px;max-width:420px}
-.letter{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px}
-.letter-rule{border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:18px}
-.letter-rule h2{margin:4px 0}
-.letter-body p{margin:6px 0;font-size:14px}
-.letter-body strong{display:inline-block;min-width:120px;color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
-.muted{color:var(--muted);font-size:13px}
-.srv{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
-.srv-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px;flex-wrap:wrap}
-.srv-head h2{margin:0 0 6px}
-.srv-head em{font-style:normal;color:var(--danger);font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-left:6px}
-.srv-head p{margin:0;font-size:13px}
-#search{margin-bottom:14px}
-.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
-table{border-collapse:collapse;width:100%;font-size:14px}
-th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
-th{background:#f1efe8;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
-tr:last-child td{border-bottom:none}
-tbody tr{cursor:pointer}
-tbody tr:hover{background:#f8f6f0}
-.cards{list-style:none;padding:0;margin:14px 0 0;display:none;gap:10px;flex-direction:column}
-.cards li{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:14px}
-@media (max-width:720px){
-  .table-wrap{display:none}
-  .cards{display:flex}
-}
-dialog{border:1px solid var(--line);border-radius:16px;padding:0;max-width:640px;width:calc(100% - 32px);
-  background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.2)}
-dialog::backdrop{background:rgba(20,20,20,.4)}
-dialog form{margin:0;padding:20px 24px}
-dialog header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;border-bottom:1px solid var(--line);padding-bottom:12px}
-dialog header h2{margin:0;font-size:19px}
-.dialog-body{max-height:60vh;overflow-y:auto;font-size:14px}
-.dialog-body p{margin:6px 0}
-.dialog-body strong{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-top:10px}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0d3b2e;color:#fff;
-  padding:12px 20px;border-radius:10px;font-size:14px;z-index:1000;box-shadow:0 6px 24px rgba(0,0,0,.2)}
-.toast.err{background:var(--danger)}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { margin: 0; font-weight: 600; }
+
+/* HEADER */
+.topbar { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.topbar-inner { max-width: 900px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text); }
+.brand-logo { width: 44px; height: 44px; }
+.brand-text { display: flex; flex-direction: column; }
+.brand-name { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; color: var(--primary); line-height: 1.1; }
+.brand-sub { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+.srv-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+.srv-btn:hover { background: var(--bg); color: var(--text); }
+
+/* MAIN LAYOUT */
+.page { max-width: 900px; margin: 0 auto; padding: 30px 20px 80px; }
+.lede { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; text-align: center; }
+
+/* FORM CARD */
+.sheet { background: var(--card); border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05); overflow: hidden; }
+.block { padding: 28px 32px; border-bottom: 1px solid var(--border); }
+.block:last-child { border-bottom: none; }
+.block-title { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.block-num { background: #e0f2fe; color: var(--primary); font-weight: 700; font-size: 12px; padding: 4px 8px; border-radius: 6px; }
+.block-title h2 { font-size: 18px; color: var(--primary-dark); }
+
+/* INPUTS */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .split { grid-template-columns: 1fr; gap: 0; } }
+.field { display: block; margin-bottom: 16px; }
+.field-label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+input, select, textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; background: #fff; font-family: inherit; font-size: 15px; color: var(--text); transition: 0.2s; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,90,156,0.1); }
+textarea { resize: vertical; min-height: 80px; }
+.hint { display: block; font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+.err { display: block; font-size: 12px; color: var(--danger); margin-top: 6px; font-weight: 500; }
+
+/* BUTTONS */
+button { font-family: inherit; cursor: pointer; border-radius: 8px; font-weight: 600; transition: 0.2s; }
+button.primary { background: var(--primary); color: #fff; border: none; padding: 14px 24px; font-size: 15px; width: 100%; margin-top: 10px; }
+button.primary:hover { background: var(--primary-dark); }
+button.ghost { background: #f8fafc; border: 1px solid var(--border); color: var(--text); padding: 8px 14px; font-size: 13px; }
+button.ghost:hover { background: #f1f5f9; }
+button.text-btn { background: none; border: none; color: var(--primary); font-size: 13px; padding: 0; text-decoration: underline; }
+
+/* REPEAT ROWS (Telefon/E-posta) */
+.repeat { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+.repeat-row { display: flex; gap: 10px; }
+.repeat-row input { flex: 1; }
+.repeat-row button { background: #fee2e2; color: var(--danger); border: none; padding: 0 16px; border-radius: 8px; font-size: 18px; }
+.repeat-row button:hover { background: #fecaca; }
+
+/* FILE UPLOAD */
+.drop { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed var(--border); border-radius: 12px; padding: 30px 20px; text-align: center; cursor: pointer; background: #f8fafc; transition: 0.2s; }
+.drop:hover, .drop.over { border-color: var(--primary); background: #e0f2fe; }
+.drop svg { width: 32px; height: 32px; color: var(--primary); margin-bottom: 12px; }
+.drop span { font-size: 14px; font-weight: 600; color: var(--text); }
+.drop small { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.drop input { display: none; }
+.files { list-style: none; padding: 0; margin: 12px 0 0; }
+.files li { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f1f5f9; border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
+.files button { color: var(--danger); background: none; border: none; font-weight: 600; }
+
+/* CONSENT */
+.consent { background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.consent-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 10px; }
+.consent-top p { margin: 0; font-size: 14px; }
+.check { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+.check input { width: 18px; height: 18px; margin-top: 2px; }
+.check span { font-size: 14px; font-weight: 500; }
+
+/* ALERTS */
+.banner { background: #fee2e2; color: var(--danger); padding: 14px; border-radius: 8px; font-size: 14px; margin: 20px 0 0; border: 1px solid #fecaca; text-align: center; font-weight: 500; }
+
+/* SRV DASHBOARD */
+.srv-panel { background: var(--card); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+.srv-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.srv-header h2 { color: var(--primary-dark); font-size: 22px; }
+.srv-header p { margin: 4px 0 0; font-size: 13px; color: var(--text-muted); }
+.search-box { width: 100%; margin-bottom: 20px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
+
+/* TABLE (Desktop) */
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; display: none; }
+@media (min-width: 769px) { .table-wrap { display: block; } }
+table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+th { background: #f8fafc; padding: 14px; font-weight: 600; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+td { padding: 14px; border-bottom: 1px solid var(--border); }
+tbody tr { cursor: pointer; transition: 0.2s; }
+tbody tr:hover { background: #f8fafc; }
+
+/* CARDS (Mobile) */
+.cards { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+@media (min-width: 769px) { .cards { display: none; } }
+.cards li { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.cards li strong { color: var(--primary); font-size: 16px; display: block; margin-bottom: 6px; }
+.cards li span { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 2px; }
+
+/* DIALOGS */
+dialog { border: none; border-radius: 16px; padding: 0; width: 100%; max-width: 600px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); background: var(--card); }
+dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); }
+.dialog-head { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.dialog-head h2 { font-size: 18px; color: var(--primary-dark); }
+.dialog-body { padding: 24px; max-height: 70vh; overflow-y: auto; }
+.dialog-body p { margin: 0 0 12px; font-size: 14px; line-height: 1.6; }
+
+/* LETTER (Success) */
+.letter { text-align: center; padding: 40px 20px; }
+.letter-icon { width: 64px; height: 64px; background: #dcfce7; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+.letter h2 { font-size: 24px; color: var(--primary-dark); margin-bottom: 10px; }
+.letter p { color: var(--text-muted); margin-bottom: 24px; }
+.letter-details { background: #f8fafc; border-radius: 12px; padding: 20px; text-align: left; font-size: 14px; margin-bottom: 24px; }
+.letter-details strong { display: block; font-size: 12px; text-transform: uppercase; color: var(--text-muted); margin-top: 12px; }
+.letter-details strong:first-child { margin-top: 0; }
+.letter-details span { display: block; font-size: 15px; font-weight: 500; margin-top: 2px; }
+
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 14px; z-index: 1000; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); animation: slideUp 0.3s ease; }
+.toast.error { background: var(--danger); }
+@keyframes slideUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
 </style>
 </head>
 <body>
 
 <header class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="#kayit">
-      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
-        <rect x="1.25" y="1.25" width="29.5" height="29.5" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
-        <path d="M9 22.5 V10.5 H15.2 C18.3 10.5 20.4 12.4 20.4 15.1 C20.4 17.8 18.3 19.6 15.2 19.6 H12" fill="none" stroke="currentColor" stroke-width="1.5"></path>
-        <path d="M18.2 22.5 L24 10.5" fill="none" stroke="currentColor" stroke-width="1.5"></path>
+    <a class="brand" href="#">
+      <!-- İCEİNOX Penguen Logosu (SVG) -->
+      <svg class="brand-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="50" fill="#005a9c"/>
+        <path d="M65 25C65 25 58 20 45 22C35 23 30 35 30 42C30 50 35 55 42 62C35 68 28 72 28 82C28 88 32 90 38 88C42 86 48 78 50 72C52 78 58 86 62 88C68 90 72 88 72 82C72 72 65 68 58 62C65 55 70 50 70 42C70 35 65 25 65 25Z" fill="white"/>
+        <path d="M55 30C55 30 50 28 45 30C40 32 38 38 40 42C42 46 48 48 52 45C56 42 58 35 55 30Z" fill="#005a9c"/>
       </svg>
-      <span>
-        <span class="brand-kicker">İCEİNOX</span>
-        <span class="brand-title">Tedarikçi kaydı</span>
-      </span>
+      <div class="brand-text">
+        <span class="brand-name">İCEİNOX</span>
+        <span class="brand-sub">Commercial Refrigerators</span>
+      </div>
     </a>
-    <button class="text-button" type="button" id="srv-entry">SRV girişi</button>
+    <button class="srv-btn" id="srv-entry">SRV Girişi</button>
   </div>
 </header>
 
 <main class="page" id="kayit">
-  <p class="lede" id="lede">Kullanıcı adı ve parola gerekmez. Bilgileriniz listeye işlenir. Listeyi yalnız SRV görür.</p>
+  <p class="lede" id="lede">Lütfen tedarikçi bilgilerinizi eksiksiz doldurun. Kaydınız sadece İCEİNOX yetkilileri (SRV) tarafından görüntülenebilir.</p>
 
   <form class="sheet" id="supplier-form" novalidate>
+    <!-- BÖLÜM 01: Yetkili -->
     <section class="block">
-      <header class="block-title"><span>01</span><h2>Yetkili</h2></header>
+      <div class="block-title"><span class="block-num">01</span><h2>Yetkili Bilgileri</h2></div>
       <div class="split">
-        <label class="field"><span>Ad</span><input id="firstName" name="firstName" autocomplete="given-name" /><small class="field-error" id="error-firstName" hidden></small></label>
-        <label class="field"><span>Soyad</span><input id="lastName" name="lastName" autocomplete="family-name" /><small class="field-error" id="error-lastName" hidden></small></label>
+        <label class="field"><span class="field-label">Ad *</span><input id="firstName" autocomplete="given-name" /><small class="err" id="err-firstName" hidden></small></label>
+        <label class="field"><span class="field-label">Soyad *</span><input id="lastName" autocomplete="family-name" /><small class="err" id="err-lastName" hidden></small></label>
+      </div>
+      <div class="split">
+        <label class="field"><span class="field-label">Telefon *</span><div class="repeat" id="phone-list"><div class="repeat-row"><input type="tel" placeholder="05xx xxx xx xx" autocomplete="tel" /></div></div><button class="text-btn" type="button" id="add-phone">+ Telefon Ekle</button><small class="err" id="err-phones" hidden></small></label>
+        <label class="field"><span class="field-label">E-posta *</span><div class="repeat" id="email-list"><div class="repeat-row"><input type="email" placeholder="ornek@firma.com" autocomplete="email" /></div></div><button class="text-btn" type="button" id="add-email">+ E-posta Ekle</button><small class="err" id="err-emails" hidden></small></label>
       </div>
     </section>
 
+    <!-- BÖLÜM 02: Firma -->
     <section class="block">
-      <header class="block-title"><span>02</span><h2>Firma</h2></header>
+      <div class="block-title"><span class="block-num">02</span><h2>Firma Bilgileri</h2></div>
       <label class="field">
-        <span>Firma adı</span>
-        <input id="companyName" name="companyName" autocomplete="organization" />
+        <span class="field-label">Firma Adı *</span>
+        <input id="companyName" autocomplete="organization" placeholder="Örn: İceinox Soğutma A.Ş." />
         <small class="hint">A.Ş. ve Ltd. Şti. ekleri aynı firma sayılır.</small>
-        <small class="field-error" id="error-companyName" hidden></small>
+        <small class="err" id="err-companyName" hidden></small>
       </label>
-      <label class="field">
-        <span>Ne üzerine çalışıyorsunuz, ne satıyorsunuz?</span>
-        <textarea id="products" name="products" rows="4" placeholder="Örneğin paslanmaz sac, boru bağlantı elemanları ve proje kesimi."></textarea>
-        <small class="field-error" id="error-products" hidden></small>
-      </label>
-    </section>
-
-    <section class="block">
-      <header class="block-title"><span>03</span><h2>İletişim</h2></header>
-      <div class="field">
-        <span>Telefon</span>
-        <div class="repeat" id="phone-list">
-          <div class="repeat-row"><input type="tel" inputmode="tel" placeholder="05xx xxx xx xx" aria-label="Telefon 1" autocomplete="tel" /></div>
-        </div>
-        <button class="ghost" type="button" id="add-phone">Telefon ekle</button>
-        <small class="field-error" id="error-phones" hidden></small>
-      </div>
-      <div class="field">
-        <span>E-posta</span>
-        <div class="repeat" id="email-list">
-          <div class="repeat-row"><input type="email" inputmode="email" placeholder="firma@ornek.com" aria-label="E-posta 1" autocomplete="email" /></div>
-        </div>
-        <button class="ghost" type="button" id="add-email">E-posta ekle</button>
-        <small class="field-error" id="error-emails" hidden></small>
-      </div>
-    </section>
-
-    <section class="block">
-      <header class="block-title"><span>04</span><h2>Adres</h2></header>
       <div class="split">
-        <label class="field"><span>Ülke</span><input id="country" value="Türkiye" /><small class="field-error" id="error-country" hidden></small></label>
-        <label class="field"><span>İl</span><input id="city" autocomplete="address-level1" /><small class="field-error" id="error-city" hidden></small></label>
-        <label class="field"><span>İlçe</span><input id="district" autocomplete="address-level2" /><small class="field-error" id="error-district" hidden></small></label>
+        <label class="field"><span class="field-label">Vergi Dairesi / TCKN</span><input id="taxOffice" placeholder="Örn: Beşiktaş" /></label>
+        <label class="field"><span class="field-label">Vergi / TC Kimlik No</span><input id="taxNumber" placeholder="10 veya 11 haneli sayı" /></label>
       </div>
-      <label class="field">
-        <span>Açık adres</span>
-        <textarea id="address" rows="3" placeholder="Mahalle, cadde veya sokak, kapı ve daire numarası" autocomplete="street-address"></textarea>
-        <small class="field-error" id="error-address" hidden></small>
-      </label>
+      <div class="split">
+        <label class="field"><span class="field-label">Web Sitesi</span><input id="website" type="url" placeholder="https://www.ornek.com" /></label>
+        <label class="field"><span class="field-label">Faaliyet Konusu / Sattığınız Ürünler *</span><textarea id="products" rows="2" placeholder="Örn: Paslanmaz sac, boru bağlantı elemanları..."></textarea><small class="err" id="err-products" hidden></small></label>
+      </div>
     </section>
 
+    <!-- BÖLÜM 03: Adres -->
     <section class="block">
-      <header class="block-title"><span>05</span><h2>Not ve katalog</h2></header>
+      <div class="block-title"><span class="block-num">03</span><h2>Adres ve Konum</h2></div>
+      <div class="split">
+        <label class="field"><span class="field-label">Ülke *</span><input id="country" value="Türkiye" /><small class="err" id="err-country" hidden></small></label>
+        <label class="field"><span class="field-label">İl *</span><input id="city" autocomplete="address-level1" /><small class="err" id="err-city" hidden></small></label>
+      </div>
+      <div class="split">
+        <label class="field"><span class="field-label">İlçe *</span><input id="district" autocomplete="address-level2" /><small class="err" id="err-district" hidden></small></label>
+        <label class="field"><span class="field-label">Açık Adres *</span><textarea id="address" rows="2" placeholder="Mahalle, cadde, sokak, no..." autocomplete="street-address"></textarea><small class="err" id="err-address" hidden></small></label>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 04: Katalog ve Onay -->
+    <section class="block">
+      <div class="block-title"><span class="block-num">04</span><h2>Katalog ve Onay</h2></div>
       <label class="field">
-        <span>Eklemek istediğiniz not</span>
-        <textarea id="notes" rows="3" placeholder="Teslimat şekli, sertifika veya görüşmek istediğiniz ürün grubu."></textarea>
-        <small class="hint">İsteğe bağlı.</small>
-        <small class="field-error" id="error-notes" hidden></small>
+        <span class="field-label">Eklemek İstediğiniz Not</span>
+        <textarea id="notes" rows="2" placeholder="Teslimat şekli, sertifikalar veya eklemek istedikleriniz..."></textarea>
       </label>
       <div class="field">
-        <span>Katalog</span>
+        <span class="field-label">Katalog (İsteğe Bağlı)</span>
         <label class="drop" id="drop-zone">
-          <strong>Dosyaları seçin veya buraya bırakın</strong>
-          <span>Katalog varsa ekleyin. Dosya olmadan da kayıt tamamlanır.</span>
-          <input id="catalog" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.xls,.xlsx,application/pdf,image/jpeg,image/png,image/webp" />
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+          <span>Dosya seçmek için tıklayın veya sürükleyin</span>
+          <small>PDF, Word, Excel veya Görsel (Max 8MB, 2 Adet)</small>
+          <input id="catalog" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.xls,.xlsx" />
         </label>
-        <small class="hint">PDF, Word, Excel veya görsel. Dosya başına 8 MB, en fazla 2 dosya.</small>
         <ul class="files" id="file-list"></ul>
-        <small class="field-error" id="error-files" hidden></small>
+        <small class="err" id="err-files" hidden></small>
       </div>
-    </section>
-
-    <section class="block">
-      <header class="block-title"><span>06</span><h2>Onay</h2></header>
-      <div class="consent">
-        <div class="consent-row">
-          <p>Kayıt, KVKK aydınlatma metnini açıp onaylamadan listeye eklenmez.</p>
-          <button class="ghost" type="button" id="open-kvkk">Metni aç</button>
+      
+      <div class="consent" style="margin-top: 24px;">
+        <div class="consent-top">
+          <p>KVKK aydınlatma metnini onaylamadan kayıt tamamlanamaz.</p>
+          <button class="ghost" type="button" id="open-kvkk">Metni Aç</button>
         </div>
         <label class="check">
           <input id="kvkk" type="checkbox" disabled />
-          <span>KVKK aydınlatma metnini okudum ve kişisel verilerimin bu metinde belirtilen amaçlarla işlenmesini onaylıyorum.</span>
+          <span>KVKK aydınlatma metnini okudum, kişisel verilerimin işlenmesini kabul ediyorum.</span>
         </label>
-        <small class="hint" id="kvkk-hint">Onay kutusu, metin açıldıktan sonra kullanılabilir.</small>
-        <small class="field-error" id="error-kvkk" hidden></small>
+        <small class="hint" id="kvkk-hint">Lütfen önce metni açıp okuyun.</small>
+        <small class="err" id="err-kvkk" hidden></small>
       </div>
     </section>
 
     <p class="banner" id="form-error" hidden></p>
-    <div class="submit-row">
-      <p>Kaydet dediğinizde kayıt listeye eklenir. Sonradan silinemez.</p>
-      <button class="primary" type="submit" id="save-button">Kaydet</button>
+    
+    <div style="padding: 0 32px 32px;">
+      <button class="primary" type="submit" id="save-button">Tedarikçi Kaydını Tamamla</button>
+      <p style="text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 16px;">Kayıtlar silinemez, sadece İCEİNOX yetkilileri tarafından görüntülenebilir.</p>
     </div>
   </form>
 
+  <!-- BAŞARILI EKRANI -->
   <article class="letter" id="letter-view" hidden>
-    <div class="letter-rule">
-      <p class="brand-kicker">İCEİNOX</p>
-      <h2>Kaydınız alındı.</h2>
-      <p class="muted" id="letter-date"></p>
+    <div class="letter-icon">
+      <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
     </div>
-    <div class="letter-body" id="letter-body"></div>
-    <p class="banner" id="letter-warning" hidden></p>
-    <button class="ghost" type="button" id="another" style="margin-top:16px">Yeni kayıt oluştur</button>
+    <h2>Kaydınız Alındı!</h2>
+    <p>Bilgileriniz İCEİNOX tedarikçi havuzuna başarıyla eklendi.</p>
+    <div class="letter-details" id="letter-body"></div>
+    <button class="ghost" type="button" id="another" style="width: 100%;">Yeni Bir Kayıt Oluştur</button>
   </article>
 
-  <section class="srv" id="srv-view" hidden>
-    <div class="srv-head">
+  <!-- SRV GÖRÜNÜMÜ -->
+  <section class="srv-panel" id="srv-view" hidden>
+    <div class="srv-header">
       <div>
-        <h2>Kim ne kaydetmiş <em>Silinemez</em></h2>
-        <p>Her satır, formu dolduran yetkiliyi ve firmayı gösterir. Bu ekrandan kayıt silinmez.</p>
+        <h2>SRV Tedarikçi Paneli</h2>
+        <p>Sadece yönetici erişimi. Kayıtları görüntüleyebilir, silemezsiniz.</p>
       </div>
-      <p class="muted" id="record-count">Yükleniyor</p>
+      <button class="ghost" id="srv-logout">Oturumu Kapat</button>
     </div>
-    <input id="search" type="search" placeholder="Firma, yetkili, telefon veya şehir ara" aria-label="Kayıtlarda ara" />
+    <input class="search-box" id="search" type="search" placeholder="Firma, yetkili, telefon veya il arayın..." />
     <p class="banner" id="list-error" hidden></p>
-    <p class="muted" id="list-empty" hidden>Henüz kayıt yok.</p>
+    <p class="hint" id="list-empty" style="text-align: center; padding: 20px;" hidden>Henüz kayıtlı tedarikçi bulunmuyor.</p>
+    
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Firma</th><th>Yetkili</th><th>Telefon</th><th>İl</th><th>Zaman</th></tr></thead>
+        <thead><tr><th>Firma</th><th>Yetkili</th><th>Telefon</th><th>İl</th><th>Kayıt Tarihi</th></tr></thead>
         <tbody id="record-rows"></tbody>
       </table>
     </div>
     <ul class="cards" id="record-cards"></ul>
-    <button class="ghost" type="button" id="srv-logout" style="margin-top:16px">Çıkış</button>
   </section>
 </main>
 
+<!-- DIALOGLAR (Açılır Pencereler) -->
 <dialog id="kvkk-dialog">
-  <form method="dialog">
-    <header><h2>KVKK aydınlatma metni</h2><button class="ghost" value="cancel">Kapat</button></header>
-    <div class="dialog-body" id="kvkk-body"></div>
-  </form>
+  <div class="dialog-head"><h2>KVKK Aydınlatma Metni</h2><button class="ghost" onclick="document.getElementById('kvkk-dialog').close()">Kapat</button></div>
+  <div class="dialog-body">
+    <p><strong>Veri Sorumlusu:</strong> İCEİNOX Commercial Refrigerators</p>
+    <p><strong>İşlenen Veriler:</strong> Ad, soyad, firma unvanı, vergi bilgileri, telefon, e-posta, adres, faaliyet konusu ve katalog dosyaları.</p>
+    <p><strong>Amaç:</strong> Tedarikçi kayıt süreçlerinin yürütülmesi, iletişim kurulması ve ticari faaliyetlerin planlanması.</p>
+    <p><strong>Güvenlik:</strong> Bilgileriniz şifreli veritabanlarında saklanır. Sistemdeki normal kullanıcılar (diğer tedarikçiler) sizin bilgilerinizi göremez. Sadece yetkili SRV ekibi erişebilir.</p>
+    <p>Formu doldurup kaydettiğinizde bu şartları kabul etmiş sayılırsınız.</p>
+  </div>
 </dialog>
 
 <dialog id="srv-dialog">
   <form id="srv-form">
-    <header><h2>SRV girişi</h2><button class="ghost" type="button" id="srv-cancel">Kapat</button></header>
-    <p>Tüm tedarikçi kayıtları bu parolayla açılır.</p>
-    <label class="field"><span>Parola</span><input id="srv-password" type="password" autocomplete="current-password" required /></label>
-    <p class="banner" id="srv-error" hidden></p>
-    <button class="primary" type="submit" id="srv-submit" style="width:100%;margin-top:10px">Listeyi aç</button>
+    <div class="dialog-head"><h2>SRV Yönetici Girişi</h2><button class="ghost" type="button" onclick="document.getElementById('srv-dialog').close()">Kapat</button></div>
+    <div class="dialog-body">
+      <label class="field"><span class="field-label">Yönetici Parolası</span><input id="srv-password" type="password" placeholder="••••••••" required /></label>
+      <p class="err" id="srv-error" hidden></p>
+      <button class="primary" type="submit" id="srv-submit">Giriş Yap</button>
+    </div>
   </form>
 </dialog>
 
 <dialog id="detail-dialog">
-  <form method="dialog">
-    <header><h2 id="detail-title">Kayıt</h2><button class="ghost" value="cancel">Kapat</button></header>
-    <div class="dialog-body" id="detail-body"></div>
-  </form>
+  <div class="dialog-head"><h2 id="detail-title">Tedarikçi Detayı</h2><button class="ghost" onclick="document.getElementById('detail-dialog').close()">Kapat</button></div>
+  <div class="dialog-body" id="detail-body"></div>
 </dialog>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, collection, runTransaction, query, orderBy, getDocs, serverTimestamp }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref as storageRef, uploadBytes, getBytes }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, runTransaction, collection, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
+/* ============ AYARLAR ============ */
 const firebaseConfig = {
   apiKey: "AIzaSyCxNyB1lb-Zs7ZFqrvRLZIHG7oR91T6DHM",
   authDomain: "tedarikcilist.firebaseapp.com",
@@ -304,22 +328,8 @@ const firebaseConfig = {
   appId: "1:133928385235:web:76b9ace55ab2847df17226"
 };
 const SRV_EMAIL = "srv@iceinox.com";
-const MAX_FILES = 2;
-const MAX_FILE_SIZE = 8 * 1024 * 1024;
-const ALLOWED = new Set([
-  "application/pdf", "image/jpeg", "image/png", "image/webp", "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.ms-excel",
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-]);
-const EXT = {
-  pdf: "application/pdf", jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp",
-  doc: "application/msword",
-  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  xls: "application/vnd.ms-excel",
-  xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-};
-const LEGAL = ["anonimsirketi", "limitedsirketi", "ltdsti", "limited", "anonim", "ltd", "sti", "as"];
+const SRV_PASS  = "Sena_2003";
+const MAX_FILES = 2, MAX_FILE_SIZE = 8 * 1024 * 1024;
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -327,416 +337,295 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 const $ = (id) => document.getElementById(id);
-let selectedFiles = [];
-let recordsCache = [];
-
-function toast(message, isErr = false) {
+const toast = (msg, isErr = false) => {
   const el = document.createElement("div");
-  el.className = "toast" + (isErr ? " err" : "");
-  el.textContent = message;
+  el.className = "toast" + (isErr ? " error" : "");
+  el.textContent = msg;
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 4000);
-}
-function showErr(id, message) {
-  const el = $(id);
-  if (!el) return;
-  el.textContent = message || "";
-  el.hidden = !message;
-}
-function codeOf(error) {
-  return String(error?.code || "");
-}
-function authMessage(error) {
-  const code = codeOf(error);
-  if (code.includes("invalid-credential") || code.includes("wrong-password") || code.includes("user-not-found") || code.includes("invalid-login")) return "Parola hatalı.";
-  if (code.includes("configuration-not-found")) return "Firebase Authentication henüz açılmamış. Email/Password ve Anonymous yöntemlerini açın.";
-  if (code.includes("operation-not-allowed")) return "Email/Password veya Anonymous kapalı. Firebase konsolundan ikisini de açın.";
-  if (code.includes("unauthorized-domain")) return "Bu site adresi yetkili alan adlarında yok. iceinoxyazilim.github.io adresini ekleyin.";
-  if (code.includes("permission-denied")) return "Bu firmaya ait bu telefon numarasıyla daha önce kayıt oluşturulmuş. Kurallar yayınlı değilse kayıt da bu yüzden durur.";
-  return "İşlem tamamlanamadı. Bağlantınızı ve kuralları kontrol edin.";
-}
-function fold(value) {
-  return value.trim().replace(/İ/g, "i").replace(/I/g, "ı").toLocaleLowerCase("tr-TR").replace(/ı/g, "i").normalize("NFD").replace(/\p{M}/gu, "").replace(/[^a-z0-9]/g, "");
-}
-function companyKey(name) {
-  let key = fold(name);
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (const suffix of LEGAL) {
-      if (key.endsWith(suffix) && key.length - suffix.length >= 3) {
-        key = key.slice(0, -suffix.length);
-        changed = true;
-        break;
-      }
-    }
+};
+const showErr = (id, msg) => { const el = $(id); if (el) { el.textContent = msg; el.hidden = !msg; } };
+const normalizePhone = (raw) => {
+  let d = (raw || "").replace(/\D/g, "");
+  if (d.startsWith("90") && d.length === 12) d = d.slice(2);
+  if (d.startsWith("0") && d.length === 11) d = d.slice(1);
+  return d;
+};
+const normalizeCompanyKey = (name) => (name || "").toLowerCase().replace(/\b(a\.?\s*ş\.?|ltd\.?\s*şti\.?|limited|şirketi|anonim\s*şirketi|aş|ltd|şti)\b/g, "").replace(/[^a-z0-9]+/g, "").slice(0, 120);
+const randomId = (n = 20) => { let s = ""; const b = new Uint8Array(n); crypto.getRandomValues(b); for (let i=0; i<n; i++) s += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"[b[i]%62]; return s; };
+
+async function ensureAnon() {
+  if (!auth.currentUser) {
+    try { await signInAnonymously(auth); }
+    catch (e) { throw new Error("Anonim giriş yapılamadı. Lütfen Firebase panelinden Anonymous girişini aktifleştirin."); }
   }
-  return key;
+  return auth.currentUser;
 }
-function phoneKey(input) {
-  let digits = input.replace(/\D/g, "");
-  if (digits.startsWith("0090")) digits = digits.slice(4);
-  else if (digits.startsWith("90") && digits.length >= 12) digits = digits.slice(2);
-  if (digits.startsWith("0") && digits.length === 11) digits = digits.slice(1);
-  return digits;
-}
-function fileType(file) {
-  if (ALLOWED.has(file.type)) return file.type;
-  const ext = file.name.split(".").pop()?.toLowerCase() || "";
-  return EXT[ext] || "";
-}
-function objectName(file, index) {
-  const ext = (file.name.split(".").pop() || "dosya").toLowerCase();
-  const safe = /^[a-z0-9]+$/.test(ext) ? ext : "dosya";
-  return `${Date.now()}-${index}.${safe}`;
-}
-function addLine(label, value) {
-  const title = document.createElement("strong");
-  title.textContent = label;
-  const text = document.createElement("p");
-  text.textContent = value;
-  return [title, text];
+async function isSrvUser() {
+  const u = auth.currentUser;
+  return u && u.email && u.email.toLowerCase() === SRV_EMAIL.toLowerCase();
 }
 
-const kvkkBody = $("kvkk-body");
-for (const [title, text] of [
-  ["Veri sorumlusu", "İCEİNOX. Başvurularınızı kvkk@iceinox.com adresine iletebilirsiniz."],
-  ["İşlenen veriler", "Ad, soyad, firma adı, telefon, e-posta, ülke, il, ilçe, açık adres, faaliyet, not ve katalog. Form kullanıcı adı veya parola istemez."],
-  ["Amaç", "Tedarikçi kaydının alınması, sizinle iletişim ve olası ticari ilişkinin yürütülmesi."],
-  ["Saklama", "Kayıtlar listeden silinemez. Yalnız SRV görür. Kanun’dan doğan başvuru hakkınız sürer."]
-]) {
-  kvkkBody.append(...addLine(title, text));
-}
-
-function addRepeat(listId, type, placeholder) {
-  const list = $(listId);
-  if (list.children.length >= 8) return;
-  const row = document.createElement("div");
-  row.className = "repeat-row";
-  const input = document.createElement("input");
-  input.type = type;
-  input.placeholder = placeholder;
-  const remove = document.createElement("button");
-  remove.type = "button";
-  remove.className = "ghost";
-  remove.textContent = "Sil";
-  remove.onclick = () => { if (list.children.length > 1) row.remove(); };
-  row.append(input, remove);
-  list.append(row);
-}
-$("add-phone").onclick = () => addRepeat("phone-list", "tel", "05xx xxx xx xx");
-$("add-email").onclick = () => addRepeat("email-list", "email", "firma@ornek.com");
-
-function renderFiles() {
-  const list = $("file-list");
-  list.replaceChildren();
-  selectedFiles.forEach((file, index) => {
-    const item = document.createElement("li");
-    const name = document.createElement("span");
-    name.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`;
-    const remove = document.createElement("button");
-    remove.type = "button";
-    remove.textContent = "Kaldır";
-    remove.onclick = () => { selectedFiles.splice(index, 1); renderFiles(); };
-    item.append(name, remove);
-    list.append(item);
-  });
-}
-function takeFiles(list) {
-  showErr("error-files", "");
-  for (const file of list) {
-    if (selectedFiles.length >= MAX_FILES) { showErr("error-files", "En fazla 2 dosya eklenebilir."); break; }
-    if (file.size <= 0 || file.size > MAX_FILE_SIZE) { showErr("error-files", `${file.name} 8 MB sınırına uymuyor.`); continue; }
-    if (!fileType(file)) { showErr("error-files", `${file.name} desteklenmiyor.`); continue; }
-    selectedFiles.push(file);
+/* ============ DOSYA YÜKLEME ============ */
+let selectedFiles = [];
+function handleFiles(files) {
+  showErr("err-files", "");
+  for (const f of files) {
+    if (selectedFiles.length >= MAX_FILES) { showErr("err-files", `En fazla ${MAX_FILES} dosya ekleyebilirsiniz.`); break; }
+    if (f.size > MAX_FILE_SIZE) { showErr("err-files", `${f.name} dosyası 8MB'tan büyük olamaz.`); continue; }
+    if (!selectedFiles.some(x => x.name === f.name && x.size === f.size)) selectedFiles.push(f);
   }
   renderFiles();
 }
-$("catalog").onchange = (event) => { takeFiles(event.target.files); event.target.value = ""; };
+function renderFiles() {
+  const list = $("file-list");
+  list.innerHTML = "";
+  selectedFiles.forEach((f, i) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span>${f.name} (${(f.size/1024/1024).toFixed(1)} MB)</span><button type="button">Kaldır</button>`;
+    li.querySelector("button").onclick = () => { selectedFiles.splice(i, 1); renderFiles(); };
+    list.appendChild(li);
+  });
+}
+$("catalog").onchange = (e) => handleFiles(e.target.files);
 const drop = $("drop-zone");
-["dragenter", "dragover"].forEach((name) => drop.addEventListener(name, (event) => { event.preventDefault(); drop.classList.add("over"); }));
-["dragleave", "drop"].forEach((name) => drop.addEventListener(name, (event) => { event.preventDefault(); drop.classList.remove("over"); }));
-drop.addEventListener("drop", (event) => takeFiles(event.dataTransfer.files));
+["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => handleFiles(e.dataTransfer.files));
 
 $("open-kvkk").onclick = () => {
   $("kvkk-dialog").showModal();
-  $("kvkk").disabled = false;
-  $("kvkk-hint").textContent = "Onay kutusu artık kullanılabilir.";
+  $("kvkk-dialog").addEventListener("close", () => {
+    if ($("kvkk").disabled) { $("kvkk").disabled = false; $("kvkk-hint").textContent = "Artık kutucuğu işaretleyebilirsiniz."; }
+  }, { once: true });
 };
 
-async function ensureAnon() {
-  if (auth.currentUser?.isAnonymous) return auth.currentUser;
-  if (auth.currentUser?.email?.toLowerCase() === SRV_EMAIL) throw new Error("SRV oturumunu kapatıp formu öyle gönderin.");
-  return (await signInAnonymously(auth)).user;
+/* ============ TELEFON / E-POSTA EKLEME ============ */
+function addRow(containerId, type, placeholder) {
+  const list = $(containerId);
+  if (list.children.length >= 8) return;
+  const div = document.createElement("div");
+  div.className = "repeat-row";
+  div.innerHTML = `<input type="${type}" placeholder="${placeholder}" /><button type="button">×</button>`;
+  div.querySelector("button").onclick = () => { if (list.children.length > 1) div.remove(); };
+  list.appendChild(div);
 }
+$("add-phone").onclick = () => addRow("phone-list", "tel", "05xx xxx xx xx");
+$("add-email").onclick = () => addRow("email-list", "email", "ornek@firma.com");
 
-$("supplier-form").onsubmit = async (event) => {
-  event.preventDefault();
-  ["error-firstName", "error-lastName", "error-companyName", "error-products", "error-phones", "error-emails", "error-country", "error-city", "error-district", "error-address", "error-notes", "error-kvkk", "error-files", "form-error"].forEach((id) => showErr(id, ""));
+/* ============ KAYIT İŞLEMİ ============ */
+$("supplier-form").onsubmit = async (e) => {
+  e.preventDefault();
+  $("form-error").hidden = true;
+  ["firstName","lastName","companyName","products","phones","emails","country","city","district","address","kvkk","files"].forEach(id => showErr(`err-${id}`, ""));
+
   const firstName = $("firstName").value.trim();
-  const lastName = $("lastName").value.trim();
+  const lastName  = $("lastName").value.trim();
   const companyName = $("companyName").value.trim();
-  const products = $("products").value.trim();
-  const country = $("country").value.trim();
-  const city = $("city").value.trim();
-  const district = $("district").value.trim();
-  const address = $("address").value.trim();
-  const notes = $("notes").value.trim();
-  const phones = [...document.querySelectorAll("#phone-list input")].map((input) => phoneKey(input.value)).filter(Boolean);
-  const emails = [...document.querySelectorAll("#email-list input")].map((input) => input.value.trim()).filter(Boolean);
-  const key = companyKey(companyName);
-  let ok = true;
-  const fail = (id, message) => { showErr(id, message); ok = false; };
-  if (firstName.length < 2 || firstName.length > 60) fail("error-firstName", "Ad 2–60 karakter olmalı.");
-  if (lastName.length < 2 || lastName.length > 60) fail("error-lastName", "Soyad 2–60 karakter olmalı.");
-  if (companyName.length < 2 || companyName.length > 160 || key.length < 2) fail("error-companyName", "Firma adını açık yazın.");
-  if (products.length < 3 || products.length > 2000) fail("error-products", "Ne sattığınızı kısaca yazın.");
-  if (!phones.length || phones.length > 8) fail("error-phones", "En az bir telefon yazın.");
-  else if (phones.some((phone) => !/^[0-9]{10,15}$/.test(phone))) fail("error-phones", "Telefonları alan koduyla yazın.");
-  else if (new Set(phones).size !== phones.length) fail("error-phones", "Aynı telefon iki kez yazılmış.");
-  if (!emails.length || emails.length > 8) fail("error-emails", "En az bir e-posta yazın.");
-  else if (emails.some((email) => !/^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/.test(email))) fail("error-emails", "E-posta adreslerini kontrol edin.");
-  if (country.length < 2 || country.length > 80) fail("error-country", "Ülke yazın.");
-  if (city.length < 2 || city.length > 80) fail("error-city", "İl yazın.");
-  if (district.length < 2 || district.length > 80) fail("error-district", "İlçe yazın.");
-  if (address.length < 8 || address.length > 400) fail("error-address", "Açık adresi mahalle ve kapı numarasıyla yazın.");
-  if (notes.length > 2000) fail("error-notes", "Not 2000 karakteri aşamaz.");
-  if (!$("kvkk").checked) fail("error-kvkk", "KVKK metnini açıp onaylayın.");
-  if (!ok) return;
+  const taxOffice = $("taxOffice").value.trim();
+  const taxNumber = $("taxNumber").value.trim();
+  const website   = $("website").value.trim();
+  const products  = $("products").value.trim();
+  const country   = $("country").value.trim();
+  const city      = $("city").value.trim();
+  const district  = $("district").value.trim();
+  const address   = $("address").value.trim();
+  const notes     = $("notes").value.trim();
+  
+  const phonesRaw = [...document.querySelectorAll("#phone-list input")].map(i => i.value.trim()).filter(Boolean);
+  const emailsRaw = [...document.querySelectorAll("#email-list input")].map(i => i.value.trim()).filter(Boolean);
+  const phones    = phonesRaw.map(normalizePhone);
+  const emails    = emailsRaw.map(s => s.toLowerCase());
 
-  const button = $("save-button");
-  button.disabled = true;
-  button.textContent = "Kaydediliyor...";
+  let ok = true;
+  const fail = (id, msg) => { showErr(`err-${id}`, msg); ok = false; };
+
+  if (firstName.length < 2) fail("firstName", "Adınızı girin.");
+  if (lastName.length < 2) fail("lastName", "Soyadınızı girin.");
+  if (companyName.length < 2) fail("companyName", "Firma adını girin.");
+  if (products.length < 3) fail("products", "Ne sattığınızı kısaca yazın.");
+  if (phones.length < 1) fail("phones", "En az bir telefon girin.");
+  else if (phones.some(p => !/^[0-9]{10,15}$/.test(p))) fail("phones", "Telefon 10-15 haneli olmalıdır.");
+  if (emails.length < 1) fail("emails", "En az bir e-posta girin.");
+  else if (emails.some(em => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))) fail("emails", "Geçerli bir e-posta girin.");
+  if (country.length < 2) fail("country", "Ülke girin.");
+  if (city.length < 2) fail("city", "İl girin.");
+  if (district.length < 2) fail("district", "İlçe girin.");
+  if (address.length < 8) fail("address", "Açık adresinizi detaylı girin.");
+  if (!$("kvkk").checked) fail("kvkk", "KVKK metnini onaylamanız gerekiyor.");
+
+  if (!ok) { $("form-error").textContent = "Lütfen kırmızı ile işaretli alanları düzeltin."; $("form-error").hidden = false; window.scrollTo({top:0, behavior:"smooth"}); return; }
+
+  const btn = $("save-button");
+  btn.disabled = true; btn.textContent = "Kaydediliyor...";
+
   try {
     const user = await ensureAnon();
-    const supplierRef = doc(collection(db, "suppliers"));
-    const supplierId = supplierRef.id;
-    const keyIds = phones.map((phone) => `${key}__${phone}`);
-    const catalogs = selectedFiles.map((file, index) => ({
-      name: file.name.slice(0, 120),
-      size: file.size,
-      contentType: fileType(file),
-      storagePath: `catalogs/${user.uid}/${supplierId}/${objectName(file, index)}`
-    }));
-    const saved = { firstName, lastName, companyName, phones, emails, country, city, district, address, products, notes, catalogs };
+    const uid = user.uid;
+    const supplierId = randomId(20);
+    const companyKey = normalizeCompanyKey(companyName);
+
+    // 1. Limit Kontrolü
+    const usageRef = doc(db, "usage", uid);
     await runTransaction(db, async (tx) => {
-      const usageRef = doc(db, "usage", user.uid);
-      const usageSnap = await tx.get(usageRef);
-      const count = usageSnap.exists() ? Number(usageSnap.data().count) : 0;
-      if (count >= 10) throw new Error("Bu tarayıcıdan en fazla 10 kayıt gönderilebilir.");
-      tx.set(usageRef, { count: count + 1, updatedAt: serverTimestamp() });
-      tx.set(supplierRef, {
-        ...saved,
-        companyKey: key,
-        phoneKeys: phones,
-        kvkkAccepted: true,
-        kvkkAcceptedAt: serverTimestamp(),
-        createdAt: serverTimestamp(),
-        createdBy: user.uid,
-        keyIds
-      });
-      keyIds.forEach((keyId) => tx.set(doc(db, "supplierKeys", keyId), { supplierId, createdAt: serverTimestamp() }));
+      const snap = await tx.get(usageRef);
+      if (snap.exists() && snap.data().count >= 10) throw new Error("Bu cihazdan maksimum kayıt limitine ulaşıldı.");
+      if (snap.exists()) tx.update(usageRef, { count: snap.data().count + 1, updatedAt: serverTimestamp() });
+      else tx.set(usageRef, { count: 1, updatedAt: serverTimestamp() });
     });
-    let warning = "";
-    try {
-      for (let index = 0; index < selectedFiles.length; index += 1) {
-        const catalog = catalogs[index];
-        await uploadBytes(storageRef(storage, catalog.storagePath), selectedFiles[index], { contentType: catalog.contentType });
+
+    // 2. Tekil Telefon Kontrolü
+    const keyIds = [];
+    for (const phone of phones) {
+      const keyId = `${companyKey}__${phone}`;
+      if ((await getDoc(doc(db, "supplierKeys", keyId))).exists()) {
+        throw new Error(`Bu firmaya ait ${phone} numarası zaten sistemde kayıtlı. Lütfen SRV ile iletişime geçin.`);
       }
-    } catch {
-      warning = "Kayıt listeye alındı. Katalog dosyası yüklenemedi.";
+      keyIds.push(keyId);
     }
-    showLetter(saved, warning);
-    toast("Kaydınız alındı.");
-  } catch (error) {
-    console.error(error);
-    showErr("form-error", error instanceof Error && !codeOf(error) ? error.message : authMessage(error));
+
+    // 3. Dosya Yükleme
+    const catalogs = [];
+    for (const file of selectedFiles) {
+      const safeName = file.name.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 60);
+      const path = `catalogs/${uid}/${supplierId}/${safeName}`;
+      const sref = sRef(storage, path);
+      await uploadBytes(sref, file, { contentType: file.type });
+      catalogs.push({ name: file.name.slice(0,120), size: file.size, contentType: file.type, storagePath: path, url: await getDownloadURL(sref) });
+    }
+
+    // 4. Veritabanına Yazma
+    const supplierDoc = {
+      firstName, lastName, companyName, companyKey, taxOffice, taxNumber, website,
+      phones, phoneKeys: phones, emails, country, city, district, address, products, notes, catalogs,
+      kvkkAccepted: true, kvkkAcceptedAt: serverTimestamp(), createdAt: serverTimestamp(), createdBy: uid, keyIds
+    };
+    await setDoc(doc(db, "suppliers", supplierId), supplierDoc);
+
+    // 5. Telefon Kilitlerini Yazma
+    for (const keyId of keyIds) {
+      await setDoc(doc(db, "supplierKeys", keyId), { supplierId, createdAt: serverTimestamp() });
+    }
+
+    showSuccess(supplierDoc);
+    toast("Tedarikçi kaydınız başarıyla alındı.");
+  } catch (err) {
+    console.error(err);
+    $("form-error").textContent = err.message || "Kayıt sırasında bir hata oluştu.";
+    $("form-error").hidden = false;
+    window.scrollTo({top:0, behavior:"smooth"});
   } finally {
-    button.disabled = false;
-    button.textContent = "Kaydet";
+    btn.disabled = false; btn.textContent = "Tedarikçi Kaydını Tamamla";
   }
 };
 
-function showLetter(data, warning) {
+function showSuccess(data) {
   $("supplier-form").hidden = true;
   $("letter-view").hidden = false;
   $("lede").hidden = true;
-  $("letter-date").textContent = new Intl.DateTimeFormat("tr-TR", { timeZone: "Europe/Istanbul", dateStyle: "long" }).format(new Date()) + ", İstanbul";
-  const body = $("letter-body");
-  body.replaceChildren();
-  const lines = [
-    ["Yetkili", `${data.firstName} ${data.lastName}`],
-    ["Firma", data.companyName],
-    ["Telefon", data.phones.join(", ")],
-    ["E-posta", data.emails.join(", ")],
-    ["Adres", `${data.country} / ${data.city} / ${data.district} — ${data.address}`],
-    ["Faaliyet", data.products],
-    ["Not", data.notes || "Yok"],
-    ["Katalog", data.catalogs.length ? data.catalogs.map((file) => file.name).join(", ") : "Yok"]
-  ];
-  for (const [label, value] of lines) {
-    const paragraph = document.createElement("p");
-    const title = document.createElement("strong");
-    title.textContent = label;
-    paragraph.append(title, document.createTextNode(value));
-    body.append(paragraph);
-  }
-  showErr("letter-warning", warning);
+  $("letter-body").innerHTML = `
+    <strong>Yetkili</strong><span>${data.firstName} ${data.lastName}</span>
+    <strong>Firma</strong><span>${data.companyName}</span>
+    <strong>Telefon</strong><span>${data.phones.join(", ")}</span>
+    <strong>E-posta</strong><span>${data.emails.join(", ")}</span>
+    <strong>Adres</strong><span>${data.country} / ${data.city} / ${data.district}<br>${data.address}</span>
+    <strong>Katalog</strong><span>${data.catalogs.length ? data.catalogs.map(c => c.name).join(", ") : "Eklenmedi"}</span>
+  `;
 }
 $("another").onclick = () => {
   $("letter-view").hidden = true;
   $("supplier-form").hidden = false;
   $("lede").hidden = false;
   $("supplier-form").reset();
-  $("country").value = "Türkiye";
-  for (const id of ["phone-list", "email-list"]) {
-    const rows = [...$(id).children];
-    rows.slice(1).forEach((row) => row.remove());
-  }
-  selectedFiles = [];
-  renderFiles();
-  $("kvkk").disabled = true;
-  $("kvkk").checked = false;
-  $("kvkk-hint").textContent = "Onay kutusu, metin açıldıktan sonra kullanılabilir.";
+  selectedFiles = []; renderFiles();
+  $("kvkk").disabled = true; $("kvkk-hint").textContent = "Lütfen önce metni açıp okuyun.";
+  window.scrollTo({top:0, behavior:"smooth"});
 };
 
-$("srv-entry").onclick = () => {
-  showErr("srv-error", "");
-  $("srv-password").value = "";
-  $("srv-dialog").showModal();
-};
-$("srv-cancel").onclick = () => $("srv-dialog").close();
-$("srv-form").onsubmit = async (event) => {
-  event.preventDefault();
-  showErr("srv-error", "");
-  const button = $("srv-submit");
-  button.disabled = true;
+/* ============ SRV PANELİ ============ */
+$("srv-entry").onclick = () => { $("srv-error").hidden = true; $("srv-password").value = ""; $("srv-dialog").showModal(); };
+$("srv-form").onsubmit = async (e) => {
+  e.preventDefault();
+  const pwd = $("srv-password").value;
+  if (pwd !== SRV_PASS) { $("srv-error").textContent = "Hatalı parola!"; $("srv-error").hidden = false; return; }
   try {
-    await signInWithEmailAndPassword(auth, SRV_EMAIL, $("srv-password").value);
-    $("srv-password").value = "";
+    await signInWithEmailAndPassword(auth, SRV_EMAIL, SRV_PASS);
     $("srv-dialog").close();
-  } catch (error) {
-    showErr("srv-error", authMessage(error));
-  } finally {
-    button.disabled = false;
+  } catch (err) {
+    $("srv-error").textContent = "Giriş başarısız: " + err.message;
+    $("srv-error").hidden = false;
   }
 };
-$("srv-logout").onclick = () => signOut(auth);
+$("srv-logout").onclick = async () => { await signOut(auth); await ensureAnon(); };
 
-function formatWhen(value) {
-  const date = value?.toDate ? value.toDate() : null;
-  if (!date) return "Tarih işleniyor";
-  return new Intl.DateTimeFormat("tr-TR", { timeZone: "Europe/Istanbul", dateStyle: "long", timeStyle: "short" }).format(date);
-}
+let recordsCache = [];
 async function loadRecords() {
-  showErr("list-error", "");
-  $("record-count").textContent = "Yükleniyor";
+  $("list-error").hidden = true; $("record-rows").innerHTML = ""; $("record-cards").innerHTML = "";
   try {
     const snap = await getDocs(query(collection(db, "suppliers"), orderBy("createdAt", "desc")));
-    recordsCache = snap.docs.map((item) => ({ id: item.id, ...item.data() }));
+    recordsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderRecords(recordsCache);
-  } catch (error) {
-    console.error(error);
-    showErr("list-error", "Kayıtlar yüklenemedi. SRV oturumunu ve Firestore kurallarını kontrol edin.");
-    $("record-count").textContent = "0 kayıt";
+  } catch (err) {
+    $("list-error").textContent = "Kayıtlar yüklenemedi: " + err.message;
+    $("list-error").hidden = false;
   }
 }
+function fmtDate(ts) {
+  if (!ts) return "-";
+  return (ts.toDate ? ts.toDate() : new Date(ts)).toLocaleString("tr-TR");
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
 function renderRecords(list) {
-  $("record-count").textContent = `${list.length} kayıt`;
-  const rows = $("record-rows");
-  const cards = $("record-cards");
-  rows.replaceChildren();
-  cards.replaceChildren();
+  const rows = $("record-rows"), cards = $("record-cards");
+  rows.innerHTML = ""; cards.innerHTML = "";
   $("list-empty").hidden = list.length > 0;
-  for (const record of list) {
-    const cells = [record.companyName || "", `${record.firstName || ""} ${record.lastName || ""}`.trim(), (record.phones || []).join(", "), record.city || "", formatWhen(record.createdAt)];
+  list.forEach(rec => {
     const tr = document.createElement("tr");
-    for (const value of cells) {
-      const td = document.createElement("td");
-      td.textContent = value;
-      tr.append(td);
-    }
-    tr.onclick = () => showDetail(record);
-    rows.append(tr);
-    const item = document.createElement("li");
-    item.textContent = `${cells[0]} — ${cells[1]} — ${cells[2]} — ${cells[4]}`;
-    item.onclick = () => showDetail(record);
-    cards.append(item);
-  }
+    tr.innerHTML = `<td><strong>${escapeHtml(rec.companyName)}</strong></td><td>${escapeHtml(rec.firstName+" "+rec.lastName)}</td><td>${escapeHtml(rec.phones.join(", "))}</td><td>${escapeHtml(rec.city)}</td><td>${fmtDate(rec.createdAt)}</td>`;
+    tr.onclick = () => showDetail(rec);
+    rows.appendChild(tr);
+
+    const li = document.createElement("li");
+    li.innerHTML = `<strong>${escapeHtml(rec.companyName)}</strong><span>${escapeHtml(rec.firstName+" "+rec.lastName)}</span><span>${escapeHtml(rec.phones.join(", "))}</span><span>${escapeHtml(rec.city)} • ${fmtDate(rec.createdAt)}</span>`;
+    li.onclick = () => showDetail(rec);
+    cards.appendChild(li);
+  });
 }
-async function downloadCatalog(file, host) {
-  if (!String(file.storagePath || "").startsWith("catalogs/")) return;
-  try {
-    const bytes = await getBytes(storageRef(storage, file.storagePath));
-    const url = URL.createObjectURL(new Blob([bytes], { type: file.contentType || "application/octet-stream" }));
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = String(file.name || "katalog").replace(/[^\w.\- ]+/g, "").slice(0, 80) || "katalog";
-    link.click();
-    URL.revokeObjectURL(url);
-  } catch {
-    const note = document.createElement("span");
-    note.className = "field-error";
-    note.textContent = " Dosya açılamadı.";
-    host.append(note);
-  }
-}
-function showDetail(record) {
-  $("detail-title").textContent = record.companyName || "Kayıt";
-  const body = $("detail-body");
-  body.replaceChildren();
-  const fields = [
-    ["Yetkili", `${record.firstName || ""} ${record.lastName || ""}`.trim()],
-    ["Firma", record.companyName || ""],
-    ["Telefon", (record.phones || []).join(", ")],
-    ["E-posta", (record.emails || []).join(", ")],
-    ["Adres", `${record.country || ""} / ${record.city || ""} / ${record.district || ""} — ${record.address || ""}`],
-    ["Faaliyet", record.products || ""],
-    ["Not", record.notes || "Yok"],
-    ["Kayıt zamanı", formatWhen(record.createdAt)]
-  ];
-  for (const [label, value] of fields) body.append(...addLine(label, value));
-  const catalogTitle = document.createElement("strong");
-  catalogTitle.textContent = "Katalog";
-  body.append(catalogTitle);
-  if (!(record.catalogs || []).length) {
-    const empty = document.createElement("p");
-    empty.textContent = "Yok";
-    body.append(empty);
-  } else {
-    for (const file of record.catalogs) {
-      const paragraph = document.createElement("p");
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "link";
-      button.textContent = file.name || "katalog";
-      button.onclick = () => downloadCatalog(file, paragraph);
-      paragraph.append(button);
-      body.append(paragraph);
-    }
-  }
+
+function showDetail(rec) {
+  $("detail-title").textContent = rec.companyName;
+  const cats = (rec.catalogs || []).map(c => `<p><a href="${c.url}" target="_blank" style="color:var(--primary);">${escapeHtml(c.name)}</a></p>`).join("") || "<p>-</p>";
+  $("detail-body").innerHTML = `
+    <p><strong>Yetkili:</strong> ${escapeHtml(rec.firstName+" "+rec.lastName)}</p>
+    <p><strong>Telefon:</strong> ${escapeHtml(rec.phones.join(", "))}</p>
+    <p><strong>E-posta:</strong> ${escapeHtml(rec.emails.join(", "))}</p>
+    <p><strong>Vergi D./No:</strong> ${escapeHtml(rec.taxOffice||"-")} / ${escapeHtml(rec.taxNumber||"-")}</p>
+    <p><strong>Web:</strong> ${escapeHtml(rec.website||"-")}</p>
+    <p><strong>Adres:</strong> ${escapeHtml(rec.country)} / ${escapeHtml(rec.city)} / ${escapeHtml(rec.district)}<br>${escapeHtml(rec.address)}</p>
+    <p><strong>Faaliyet:</strong> ${escapeHtml(rec.products)}</p>
+    ${rec.notes ? `<p><strong>Notlar:</strong> ${escapeHtml(rec.notes)}</p>` : ""}
+    <p><strong>Kataloglar:</strong><br>${cats}</p>
+    <p><strong>Kayıt Tarihi:</strong> ${fmtDate(rec.createdAt)}</p>
+  `;
   $("detail-dialog").showModal();
 }
-$("search").oninput = (event) => {
-  const term = event.target.value.toLocaleLowerCase("tr-TR").trim();
-  if (!term) return renderRecords(recordsCache);
-  renderRecords(recordsCache.filter((record) => [record.companyName, record.firstName, record.lastName, record.city, record.district, record.country, record.products, ...(record.phones || []), ...(record.emails || [])].join(" ").toLocaleLowerCase("tr-TR").includes(term)));
+
+$("search").oninput = (e) => {
+  const q = e.target.value.toLowerCase().trim();
+  if (!q) return renderRecords(recordsCache);
+  renderRecords(recordsCache.filter(r => [r.companyName, r.firstName, r.lastName, r.city, ...(r.phones||[])].join(" ").toLowerCase().includes(q)));
 };
 
-onAuthStateChanged(auth, (user) => {
-  const srv = user?.email?.toLowerCase() === SRV_EMAIL;
-  $("srv-view").hidden = !srv;
-  $("srv-entry").hidden = srv;
-  if (srv) {
-    $("supplier-form").hidden = true;
-    $("letter-view").hidden = true;
-    $("lede").hidden = true;
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { ensureAnon().catch(e => toast(e.message, true)); return; }
+  if (await isSrvUser()) {
+    $("supplier-form").hidden = true; $("letter-view").hidden = true; $("lede").hidden = true;
+    $("srv-view").hidden = false; $("srv-entry").hidden = true;
     loadRecords();
-    return;
-  }
-  if ($("letter-view").hidden) {
-    $("supplier-form").hidden = false;
-    $("lede").hidden = false;
+  } else {
+    $("supplier-form").hidden = false; $("lede").hidden = false;
+    $("srv-view").hidden = true; $("srv-entry").hidden = false;
   }
 });
 </script>
