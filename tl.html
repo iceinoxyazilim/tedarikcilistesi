@@ -426,15 +426,14 @@ $("supplier-form").onsubmit = async (event) => {
       await commit([]);
     }
     pendingFiles = selectedFiles.map((file, index) => ({ file, ...catalogs[index] }));
-    let warning = "";
-    try {
-      await uploadPending();
-      pendingFiles = [];
-    } catch (error) {
-      console.error(error);
-      warning = "Firma kaydı alındı. Dosya henüz yüklenemedi. Aşağıdan yeniden deneyin. Olmazsa Firebase Storage kurallarını yayınlayın.";
+    showLetter(saved, "");
+    const queued = pendingFiles.slice();
+    if (queued.length) {
+      withTimeout(uploadPending(), 20000).then(() => { pendingFiles = []; }).catch((error) => {
+        console.error(error);
+        if (!$("letter-view").hidden) showLetter(saved, "Kayıt alındı. Katalog dosyası yüklenemedi. Aşağıdan yeniden deneyin.");
+      });
     }
-    showLetter(saved, warning);
   } catch (error) {
     console.error(error);
     showErr("form-error", explain(error));
@@ -494,6 +493,12 @@ $("srv-logout").onclick = () => signOut(auth);
 
 let shownRecords = [];
 let pendingFiles = [];
+function withTimeout(promise, ms) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("timeout")), ms);
+    promise.then((value) => { clearTimeout(timer); resolve(value); }, (error) => { clearTimeout(timer); reject(error); });
+  });
+}
 async function uploadPending() {
   for (const item of pendingFiles) {
     await uploadBytes(storageRef(storage, item.storagePath), item.file, { contentType: item.contentType, customMetadata: { originalName: item.name } });
@@ -529,19 +534,20 @@ function crc32(data) { let c = 0xffffffff; for (let i = 0; i < data.length; i++)
 function u16(n) { return Uint8Array.of(n & 255, (n >>> 8) & 255); }
 function u32(n) { return Uint8Array.of(n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255); }
 function joinBytes(parts) { const out = new Uint8Array(parts.reduce((sum, part) => sum + part.length, 0)); let offset = 0; for (const part of parts) { out.set(part, offset); offset += part.length; } return out; }
-function zipStore(files) {
+function zipStore(files, mime = "application/zip") {
+  const flags = mime.includes("spreadsheet") ? 0 : 0x800;
   const locals = []; const central = []; let offset = 0;
   for (const file of files) {
     const name = new TextEncoder().encode(file.name);
     const crc = crc32(file.data);
-    const local = joinBytes([u32(0x04034b50), u16(20), u16(0), u16(0), u16(0), u16(0), u32(crc), u32(file.data.length), u32(file.data.length), u16(name.length), u16(0), name, file.data]);
+    const local = joinBytes([u32(0x04034b50), u16(20), u16(flags), u16(0), u16(0), u16(0), u32(crc), u32(file.data.length), u32(file.data.length), u16(name.length), u16(0), name, file.data]);
     locals.push(local);
-    central.push(joinBytes([u32(0x02014b50), u16(20), u16(20), u16(0), u16(0), u16(0), u16(0), u32(crc), u32(file.data.length), u32(file.data.length), u16(name.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(offset), name]));
+    central.push(joinBytes([u32(0x02014b50), u16(20), u16(20), u16(flags), u16(0), u16(0), u16(0), u32(crc), u32(file.data.length), u32(file.data.length), u16(name.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(offset), name]));
     offset += local.length;
   }
   const directory = joinBytes(central);
   const end = joinBytes([u32(0x06054b50), u16(0), u16(0), u16(files.length), u16(files.length), u32(directory.length), u32(offset), u16(0)]);
-  return new Blob([...locals, directory, end], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  return new Blob([...locals, directory, end], { type: mime });
 }
 function workbookBlob(matrix) {
   const encoder = new TextEncoder();
@@ -557,7 +563,7 @@ function workbookBlob(matrix) {
     "xl/styles.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="1"><font><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/></cellXfs></styleSheet>`,
     "xl/worksheets/sheet1.xml": sheet
   };
-  return zipStore(Object.entries(files).map(([name, xml]) => ({ name, data: encoder.encode(xml) })));
+  return zipStore(Object.entries(files).map(([name, xml]) => ({ name, data: encoder.encode(xml) })), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 }
 function exportMatrix(list) {
   const ordered = list;
@@ -578,27 +584,52 @@ function exportMatrix(list) {
       ...Array.from({ length: phoneCount }, (_, index) => phones[index] || ""),
       ...Array.from({ length: emailCount }, (_, index) => emails[index] || ""),
       record.country || "", record.city || "", record.district || "", record.address || "", record.products || "", record.notes || "",
-      catalogs[0]?.name || "", catalogs[1]?.name || "", record.kvkkAccepted ? "Onaylandı" : ""
+      catalogs[0]?.zipName || catalogs[0]?.name || "", catalogs[1]?.zipName || catalogs[1]?.name || "", record.kvkkAccepted ? "Onaylandı" : ""
     ];
   });
   return [headers, ...rows];
+}
+function saveBlob(blob, filename) {
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1500);
+}
+function catalogZipName(record, file, index) {
+  const clean = String(file.name || "katalog").replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, " ").trim().slice(0, 80) || "katalog";
+  return `kataloglar/${record.kayitNo || "kayit"}_${index + 1}_${clean}`;
 }
 async function downloadExcel() {
   const picked = shownRecords.filter((record) => selectedIds.has(record.id));
   const source = picked.length ? picked : shownRecords;
   if (!source.length) return;
   const button = $("export-excel");
+  const previous = button.textContent;
   button.disabled = true;
+  button.textContent = "Hazırlanıyor...";
   try {
     const enriched = [];
-    for (const record of source) enriched.push({ ...record, catalogs: await catalogFiles(record) });
+    const attachments = [];
+    for (const record of source) {
+      const catalogs = [];
+      for (const [index, file] of (await catalogFiles(record)).entries()) {
+        const zipName = catalogZipName(record, file, index);
+        if (!String(file.storagePath || "").startsWith("catalogs/")) { catalogs.push(file); continue; }
+        try {
+          const bytes = new Uint8Array(await getBytes(storageRef(storage, file.storagePath)));
+          attachments.push({ name: zipName, data: bytes });
+          catalogs.push({ ...file, zipName });
+        } catch (error) { console.error(error); catalogs.push(file); }
+      }
+      enriched.push({ ...record, catalogs });
+    }
     const stamp = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Istanbul", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(workbookBlob(exportMatrix(enriched)));
-    link.download = `ICEINOX-tedarikciler-${stamp}.xlsx`;
-    link.click();
-    URL.revokeObjectURL(link.href);
-  } finally { button.disabled = shownRecords.length === 0; }
+    const sheetName = `ICEINOX-tedarikciler-${stamp}.xlsx`;
+    const sheet = new Uint8Array(await workbookBlob(exportMatrix(enriched)).arrayBuffer());
+    if (attachments.length) saveBlob(zipStore([{ name: sheetName, data: sheet }, ...attachments]), `ICEINOX-tedarikciler-${stamp}.zip`);
+    else saveBlob(new Blob([sheet], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), sheetName);
+  } finally { button.disabled = shownRecords.length === 0; button.textContent = previous; }
 }
 function asList(value) { return Array.isArray(value) ? value : []; }
 function listFailure(error) {
@@ -698,7 +729,9 @@ function applyView() {
 }
 function updateExportLabel() {
   const count = shownRecords.filter((record) => selectedIds.has(record.id)).length;
-  $("export-excel").textContent = count ? `Seçilenleri Aktar (${count})` : "Görünenleri Aktar";
+  const pool = count ? shownRecords.filter((record) => selectedIds.has(record.id)) : shownRecords;
+  const withCatalog = pool.some((record) => asList(record.catalogs).length);
+  $("export-excel").textContent = withCatalog ? `Kataloglu ZIP Aktar${count ? ` (${count})` : ""}` : (count ? `Seçilenleri Aktar (${count})` : "Görünenleri Aktar");
   $("export-excel").disabled = shownRecords.length === 0;
   $("srv-selected").textContent = count ? `${count} satır seçili` : "Seçim yok";
 }
