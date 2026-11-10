@@ -58,37 +58,40 @@ button.link { background: none; border: none; color: var(--primary); padding: 0;
 .check span { font-size: 14px; font-weight: 500; }
 .banner { background: #fee2e2; color: var(--danger); padding: 14px; border-radius: 8px; font-size: 14px; margin: 20px 32px 0; border: 1px solid #fecaca; text-align: center; font-weight: 500; }
 [hidden] { display: none !important; }
-.srv-panel { background: var(--card); border-radius: 16px; padding: 20px 20px 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-.srv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; flex-wrap: wrap; gap: 12px; }
-.srv-header h2 { color: var(--primary-dark); font-size: 22px; }
+body.srv-open { background: #eef3f8; }
+.srv-panel { background: var(--card); border: 1px solid #dbe4ee; border-radius: 18px; padding: 0; box-shadow: 0 12px 40px rgba(15, 35, 70, .06); overflow: hidden; }
+.srv-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 22px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.srv-header h2 { color: #0c1f4d; font-size: 20px; letter-spacing: -.02em; }
 .srv-header p { margin: 4px 0 0; font-size: 13px; color: var(--text-muted); }
 .srv-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-button.excel { background: #0f7a3a; color: #fff; border: none; padding: 10px 16px; font-size: 13px; }
-button.excel:hover { background: #0b5e2c; }
+button.excel { background: #0c1f4d; color: #fff; border: none; padding: 11px 16px; font-size: 13px; }
+button.excel:hover { background: #16325c; }
 button.excel:disabled { opacity: .55; cursor: not-allowed; }
-.filters { display: grid; grid-template-columns: minmax(240px, 1.6fr) repeat(3, minmax(150px, .7fr)) auto; gap: 10px; margin-bottom: 12px; align-items: end; }
-.filters input, .filters select { width: 100%; margin: 0; padding: 11px 12px; font-size: 14px; }
-.filters .ghost { height: 44px; white-space: nowrap; }
+.filters { display: grid; grid-template-columns: minmax(240px, 1.6fr) repeat(3, minmax(150px, .7fr)) auto; gap: 10px; padding: 14px 22px; background: #f7fafc; border-bottom: 1px solid var(--border); align-items: center; }
+.filters input, .filters select { width: 100%; margin: 0; padding: 10px 12px; font-size: 13px; background: #fff; }
+.filters .ghost { height: 40px; white-space: nowrap; }
 @media (max-width: 980px) { .filters { grid-template-columns: 1fr 1fr; } }
-.srv-meta { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
-.srv-count, .srv-selected { font-size: 13px; font-weight: 600; color: var(--primary-dark); background: #e0f2fe; border-radius: 999px; padding: 6px 12px; }
-.scroll-hint { margin: 0 0 8px; font-size: 12px; color: var(--text-muted); }
-.table-wrap { display: block; overflow: auto; max-height: calc(100vh - 250px); border: 1px solid var(--border); border-radius: 12px; }
+.srv-panel .banner { margin: 0 22px 12px; }
+.srv-meta { display: flex; gap: 8px; align-items: center; padding: 10px 22px; flex-wrap: wrap; }
+.srv-count, .srv-selected { font-size: 12px; font-weight: 600; color: #0c1f4d; background: #e8f1fb; border-radius: 999px; padding: 5px 10px; }
+.table-wrap { display: block; overflow: auto; max-height: calc(100vh - 280px); border: none; border-radius: 0; }
 .table-wrap table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; font-size: 13px; }
-.table-wrap th { position: sticky; top: 0; z-index: 2; background: #0c1f4d; color: #fff; padding: 11px 12px; font-weight: 600; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; cursor: pointer; user-select: none; }
+.table-wrap th { position: sticky; top: 0; z-index: 2; background: #f8fafc; color: #475569; padding: 10px 12px; font-weight: 700; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; cursor: pointer; user-select: none; border-bottom: 1px solid #e2e8f0; }
 .table-wrap th.no-sort { cursor: default; }
-.table-wrap td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: top; background: #fff; white-space: nowrap; }
-.table-wrap td.wrap { white-space: normal; min-width: 240px; max-width: 380px; line-height: 1.45; }
-.table-wrap tbody tr:hover td { background: #f4f9fd; }
+.table-wrap td { padding: 10px 12px; border-bottom: 1px solid #eef2f6; vertical-align: top; background: #fff; white-space: nowrap; }
+.table-wrap tbody tr:nth-child(even) td { background: #fbfcfe; }
+.table-wrap td.wrap { white-space: normal; min-width: 220px; max-width: 360px; line-height: 1.45; }
+.table-wrap tbody tr:hover td { background: #f3f8fd; }
 .table-wrap tbody tr.is-selected td { background: #e7f2fb; }
 .table-wrap .pin { position: sticky; left: 0; z-index: 1; min-width: 46px; }
-.table-wrap th.pin { z-index: 3; left: 0; }
-.table-wrap .pin-2 { position: sticky; left: 46px; z-index: 1; box-shadow: 8px 0 8px -8px rgba(15, 23, 42, .45); }
-.table-wrap th.pin-2 { z-index: 3; }
-.table-wrap input { width: 16px; height: 16px; margin: 0; }
-.sort-mark { opacity: .75; font-size: 10px; }
-.kayit-no { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700; color: #0c1f4d; background: #e0f2fe; border-radius: 6px; padding: 4px 8px; letter-spacing: .03em; }
-.firm { font-weight: 650; }
+.table-wrap th.pin { z-index: 3; left: 0; background: #f8fafc; }
+.table-wrap .pin-2 { position: sticky; left: 46px; z-index: 1; box-shadow: 8px 0 8px -8px rgba(15, 23, 42, .28); }
+.table-wrap th.pin-2 { z-index: 3; background: #f8fafc; }
+.table-wrap input { width: 16px; height: 16px; margin: 0; accent-color: #0c1f4d; }
+.sort-mark { opacity: .55; font-size: 10px; }
+.kayit-no { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700; color: #0c1f4d; background: #e8f1fb; border-radius: 6px; padding: 3px 7px; letter-spacing: .03em; }
+.firm { font-weight: 650; color: #0f172a; }
+.file-chip { display: inline-block; margin: 0 6px 4px 0; padding: 3px 8px; border-radius: 999px; background: #e8f6ee; color: #0f7a3a; font-size: 12px; font-weight: 600; }
 .empty-state { text-align: center; padding: 28px 12px; color: var(--text-muted); }
 dialog { border: none; border-radius: 16px; padding: 0; width: calc(100% - 32px); max-width: 600px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); background: var(--card); color: var(--text); }
 dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
@@ -191,7 +194,7 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
     <div class="srv-header">
       <div>
         <h2>Tedarikçi Listesi</h2>
-        <p>T-0001 en eski kayıttır. Başlığa tıklayınca sütun sıralanır. Satıra tıklayınca kayıt açılır.</p>
+        <p>Başlık sıralar, satır detayı açar. Kataloglu aktarım zip olarak iner.</p>
       </div>
       <div class="srv-actions">
         <button class="excel" id="export-excel" type="button">Görünenleri Aktar</button>
@@ -209,7 +212,6 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
       <span class="srv-count" id="srv-count">0 kayıt</span>
       <span class="srv-selected" id="srv-selected">Seçim yok</span>
     </div>
-    <p class="scroll-hint">Tüm sütunlar yanyana durur. Sığmayanlar için tabloyu yana kaydırın.</p>
     <p class="banner" id="list-error" hidden></p>
     <p class="empty-state" id="list-empty" hidden>Bu filtreye uyan tedarikçi yok.</p>
     <div class="table-wrap" id="table-wrap">
@@ -242,7 +244,7 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, collection, runTransaction, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref as storageRef, uploadBytes, getBytes, listAll, getMetadata } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getStorage, ref as storageRef, uploadBytes, getBytes, getBlob, listAll, getMetadata } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCxNyB1lb-Zs7ZFqrvRLZIHG7oR91T6DHM",
@@ -593,8 +595,24 @@ function saveBlob(blob, filename) {
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = filename;
+  document.body.append(link);
   link.click();
-  setTimeout(() => URL.revokeObjectURL(link.href), 1500);
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 20000);
+}
+async function readCatalogBytes(path) {
+  const fileRef = storageRef(storage, path);
+  try { return new Uint8Array(await getBytes(fileRef)); }
+  catch (first) {
+    try { return new Uint8Array(await (await getBlob(fileRef)).arrayBuffer()); }
+    catch {
+      const token = await auth.currentUser?.getIdToken();
+      if (!token) throw first;
+      const response = await fetch(`https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${encodeURIComponent(path)}?alt=media`, { headers: { Authorization: `Firebase ${token}` } });
+      if (!response.ok) throw first;
+      return new Uint8Array(await response.arrayBuffer());
+    }
+  }
 }
 function catalogZipName(record, file, index) {
   const clean = String(file.name || "katalog").replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, " ").trim().slice(0, 80) || "katalog";
@@ -611,24 +629,28 @@ async function downloadExcel() {
   try {
     const enriched = [];
     const attachments = [];
+    const missing = [];
     for (const record of source) {
       const catalogs = [];
       for (const [index, file] of (await catalogFiles(record)).entries()) {
         const zipName = catalogZipName(record, file, index);
-        if (!String(file.storagePath || "").startsWith("catalogs/")) { catalogs.push(file); continue; }
+        const path = String(file.storagePath || "");
+        if (!path.startsWith("catalogs/")) { missing.push(file.name || zipName); catalogs.push(file); continue; }
         try {
-          const bytes = new Uint8Array(await getBytes(storageRef(storage, file.storagePath)));
-          attachments.push({ name: zipName, data: bytes });
+          attachments.push({ name: zipName, data: await readCatalogBytes(path) });
           catalogs.push({ ...file, zipName });
-        } catch (error) { console.error(error); catalogs.push(file); }
+        } catch (error) { console.error(error); missing.push(file.name || zipName); catalogs.push(file); }
       }
       enriched.push({ ...record, catalogs });
     }
     const stamp = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Istanbul", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
-    const sheetName = `ICEINOX-tedarikciler-${stamp}.xlsx`;
+    const sheetName = `liste.xlsx`;
     const sheet = new Uint8Array(await workbookBlob(exportMatrix(enriched)).arrayBuffer());
-    if (attachments.length) saveBlob(zipStore([{ name: sheetName, data: sheet }, ...attachments]), `ICEINOX-tedarikciler-${stamp}.zip`);
-    else saveBlob(new Blob([sheet], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), sheetName);
+    const wantsZip = attachments.length > 0 || missing.length > 0;
+    if (wantsZip) {
+      saveBlob(zipStore([{ name: sheetName, data: sheet }, ...attachments]), `ICEINOX-tedarikciler-${stamp}.zip`);
+      showErr("list-error", missing.length ? `Zip indi. Açılmayan kataloglar depoya yüklenmemiş: ${missing.join(", ")}` : "");
+    } else saveBlob(new Blob([sheet], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), `ICEINOX-tedarikciler-${stamp}.xlsx`);
   } finally { button.disabled = shownRecords.length === 0; button.textContent = previous; }
 }
 function asList(value) { return Array.isArray(value) ? value : []; }
@@ -799,7 +821,9 @@ function renderRecords(list) {
       const text = cellText(record, column.key) || "—";
       td.title = text;
       if (column.key === "kayitNo") { const badge = document.createElement("span"); badge.className = "kayit-no"; badge.textContent = text; td.append(badge); }
-      else { if (column.key === "companyName") td.classList.add("firm"); td.textContent = text; }
+      else if (column.key === "catalogs" && text !== "—") {
+        for (const name of text.split(", ")) { const chip = document.createElement("span"); chip.className = "file-chip"; chip.textContent = name; td.append(chip); }
+      } else { if (column.key === "companyName") td.classList.add("firm"); td.textContent = text; }
       tr.append(td);
     }
     tr.onclick = () => { void showDetail(record); };
