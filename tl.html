@@ -67,6 +67,9 @@ body.srv-open { background: #eef3f8; }
 button.excel { background: #0c1f4d; color: #fff; border: none; padding: 11px 16px; font-size: 13px; }
 button.excel:hover { background: #16325c; }
 button.excel:disabled { opacity: .55; cursor: not-allowed; }
+button.danger { background: #fff; color: var(--danger); border: 1px solid #fecdd3; padding: 11px 16px; font-size: 13px; }
+button.danger:hover { background: #fff1f2; }
+button.danger:disabled { opacity: .45; cursor: not-allowed; }
 .filters { display: grid; grid-template-columns: minmax(240px, 1.6fr) repeat(3, minmax(150px, .7fr)) auto; gap: 10px; padding: 14px 22px; background: #f7fafc; border-bottom: 1px solid var(--border); align-items: center; }
 .filters input, .filters select { width: 100%; margin: 0; padding: 10px 12px; font-size: 13px; background: #fff; }
 .filters .ghost { height: 40px; white-space: nowrap; }
@@ -179,7 +182,7 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
     <p class="banner" id="form-error" hidden></p>
     <div style="padding: 0 32px 32px;">
       <button class="primary" type="submit" id="save-button">Tedarikçi Kaydını Tamamla</button>
-      <p style="text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 16px;">Kayıtlar silinemez, sadece İCEİNOX yetkilileri tarafından görüntülenebilir.</p>
+      <p style="text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 16px;">Kaydı siz silemezsiniz. Listeyi yalnız İCEİNOX yetkilileri görür.</p>
     </div>
   </form>
   <article class="letter" id="letter-view" hidden>
@@ -197,6 +200,7 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
         <p>Başlık sıralar, satır detayı açar. Kataloglu aktarım zip olarak iner.</p>
       </div>
       <div class="srv-actions">
+        <button class="danger" id="delete-selected" type="button" disabled>Seçilenleri Sil</button>
         <button class="excel" id="export-excel" type="button">Görünenleri Aktar</button>
         <button class="ghost" id="srv-logout" type="button">Oturumu Kapat</button>
       </div>
@@ -243,8 +247,8 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, collection, runTransaction, getDocs, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref as storageRef, getDownloadURL, listAll, getMetadata } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getFirestore, doc, collection, runTransaction, getDocs, serverTimestamp, writeBatch, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref as storageRef, getDownloadURL, listAll, getMetadata, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCxNyB1lb-Zs7ZFqrvRLZIHG7oR91T6DHM",
@@ -273,7 +277,7 @@ for (const [title, text] of [
   ["Veri sorumlusu", "İCEİNOX Commercial Refrigerators. Başvurular: kvkk@iceinox.com"],
   ["İşlenen veriler", "Ad, soyad, firma, vergi bilgisi, telefon, e-posta, adres, web sitesi, faaliyet, not ve katalog. Form parola istemez."],
   ["Amaç", "Tedarikçi kaydının alınması ve sizinle iletişime geçilmesi."],
-  ["Saklama", "Kayıtlar bu ekrandan silinmez. Listeyi yalnız SRV görür."]
+  ["Saklama", "Kaydı siz silemezsiniz. Listeyi yalnız SRV görür; gerekirse kaydı oradan kaldırır."]
 ]) {
   const strong = document.createElement("strong");
   strong.textContent = title;
@@ -813,7 +817,57 @@ function updateExportLabel() {
   const withCatalog = pool.some((record) => asList(record.catalogs).length);
   $("export-excel").textContent = withCatalog ? `Kataloglu ZIP Aktar${count ? ` (${count})` : ""}` : (count ? `Seçilenleri Aktar (${count})` : "Görünenleri Aktar");
   $("export-excel").disabled = shownRecords.length === 0;
+  const remove = $("delete-selected");
+  remove.disabled = count === 0;
+  remove.textContent = count ? `Seçilenleri Sil (${count})` : "Seçilenleri Sil";
   $("srv-selected").textContent = count ? `${count} satır seçili` : "Seçim yok";
+}
+async function deleteSupplier(record) {
+  const parts = await getDocs(collection(db, "suppliers", record.id, "parts"));
+  if (parts.size) {
+    const batch = writeBatch(db);
+    parts.docs.forEach((item) => batch.delete(item.ref));
+    await batch.commit();
+  }
+  const keys = asList(record.keyIds).filter(Boolean);
+  if (keys.length) {
+    const batch = writeBatch(db);
+    keys.forEach((keyId) => batch.delete(doc(db, "supplierKeys", keyId)));
+    await batch.commit();
+  }
+  await deleteDoc(doc(db, "suppliers", record.id));
+  const paths = new Set(asList(record.catalogs).map((file) => file && file.storagePath).filter((path) => typeof path === "string" && path.startsWith("catalogs/")));
+  if (record.createdBy) {
+    try {
+      const listed = await withTimeout(listAll(storageRef(storage, `catalogs/${record.createdBy}/${record.id}`)), 5000);
+      listed.items.forEach((item) => paths.add(item.fullPath));
+    } catch { /* depoda katalog olmayabilir */ }
+  }
+  await Promise.all([...paths].map((path) => withTimeout(deleteObject(storageRef(storage, path)), 5000).catch(() => {})));
+}
+async function deleteSelected() {
+  const picked = shownRecords.filter((record) => selectedIds.has(record.id));
+  if (!picked.length) return;
+  const noun = picked.length === 1 ? "seçili kaydı" : `seçili ${picked.length} kaydı`;
+  if (!confirm(`${noun} silmek istiyor musunuz? Silinen kayıt geri gelmez.`)) return;
+  const button = $("delete-selected");
+  button.disabled = true;
+  button.textContent = "Siliniyor...";
+  const failed = [];
+  for (const record of picked) {
+    try {
+      await deleteSupplier(record);
+      selectedIds.delete(record.id);
+      recordsCache = recordsCache.filter((item) => item.id !== record.id);
+    } catch (error) {
+      console.error(error);
+      failed.push(record.kayitNo || record.companyName || "kayıt");
+    }
+  }
+  stampNumbers(recordsCache);
+  fillFilters();
+  applyView();
+  showErr("list-error", failed.length ? `Silinemedi: ${failed.join(", ")}. Firestore ve Storage kurallarını yayınlayın.` : "");
 }
 function renderRecords(list) {
   shownRecords = list;
@@ -932,6 +986,7 @@ async function showDetail(record) {
   else files.forEach((file, index) => { const button = document.createElement("button"); button.type = "button"; button.className = "link"; button.textContent = file.name || "katalog"; button.onclick = () => downloadCatalog(file, catalogs, record, index); catalogs.append(button, document.createTextNode(" ")); });
 }
 $("export-excel").onclick = () => { void downloadExcel(); };
+$("delete-selected").onclick = () => { void deleteSelected(); };
 $("search").oninput = () => applyView();
 $("filter-country").onchange = () => applyView();
 $("filter-city").onchange = () => applyView();
