@@ -72,7 +72,7 @@ button.link{background:none;border:none;color:var(--accent);text-decoration:unde
 .letter-body p{margin:6px 0;font-size:14px}
 .letter-body strong{display:inline-block;min-width:120px;color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
 .muted{color:var(--muted);font-size:13px}
-.srv{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;margin-top:24px}
+.srv{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
 .srv-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px;flex-wrap:wrap}
 .srv-head h2{margin:0 0 6px}
 .srv-head em{font-style:normal;color:var(--danger);font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-left:6px}
@@ -100,8 +100,6 @@ dialog header h2{margin:0;font-size:19px}
 .dialog-body{max-height:60vh;overflow-y:auto;font-size:14px}
 .dialog-body p{margin:6px 0}
 .dialog-body strong{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-top:10px}
-.dialog-body a{color:var(--accent);word-break:break-all}
-.srv-row{display:flex;justify-content:space-between;gap:12px}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0d3b2e;color:#fff;
   padding:12px 20px;border-radius:10px;font-size:14px;z-index:1000;box-shadow:0 6px 24px rgba(0,0,0,.2)}
 .toast.err{background:var(--danger)}
@@ -193,6 +191,7 @@ dialog header h2{margin:0;font-size:19px}
         <span>Eklemek istediğiniz not</span>
         <textarea id="notes" rows="3" placeholder="Teslimat şekli, sertifika veya görüşmek istediğiniz ürün grubu."></textarea>
         <small class="hint">İsteğe bağlı.</small>
+        <small class="field-error" id="error-notes" hidden></small>
       </label>
       <div class="field">
         <span>Katalog</span>
@@ -201,7 +200,7 @@ dialog header h2{margin:0;font-size:19px}
           <span>Katalog varsa ekleyin. Dosya olmadan da kayıt tamamlanır.</span>
           <input id="catalog" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.xls,.xlsx,application/pdf,image/jpeg,image/png,image/webp" />
         </label>
-        <small class="hint" id="file-hint">PDF, Word, Excel veya görsel. Dosya başına 8 MB, en fazla 2 dosya.</small>
+        <small class="hint">PDF, Word, Excel veya görsel. Dosya başına 8 MB, en fazla 2 dosya.</small>
         <ul class="files" id="file-list"></ul>
         <small class="field-error" id="error-files" hidden></small>
       </div>
@@ -216,7 +215,7 @@ dialog header h2{margin:0;font-size:19px}
         </div>
         <label class="check">
           <input id="kvkk" type="checkbox" disabled />
-          <span id="kvkk-label">KVKK aydınlatma metnini okudum ve kabul ediyorum.</span>
+          <span>KVKK aydınlatma metnini okudum ve kişisel verilerimin bu metinde belirtilen amaçlarla işlenmesini onaylıyorum.</span>
         </label>
         <small class="hint" id="kvkk-hint">Onay kutusu, metin açıldıktan sonra kullanılabilir.</small>
         <small class="field-error" id="error-kvkk" hidden></small>
@@ -237,6 +236,7 @@ dialog header h2{margin:0;font-size:19px}
       <p class="muted" id="letter-date"></p>
     </div>
     <div class="letter-body" id="letter-body"></div>
+    <p class="banner" id="letter-warning" hidden></p>
     <button class="ghost" type="button" id="another" style="margin-top:16px">Yeni kayıt oluştur</button>
   </article>
 
@@ -244,7 +244,7 @@ dialog header h2{margin:0;font-size:19px}
     <div class="srv-head">
       <div>
         <h2>Kim ne kaydetmiş <em>Silinemez</em></h2>
-        <p>Her satır, formu dolduran yetkiliyi ve firmayı gösterir.</p>
+        <p>Her satır, formu dolduran yetkiliyi ve firmayı gösterir. Bu ekrandan kayıt silinmez.</p>
       </div>
       <p class="muted" id="record-count">Yükleniyor</p>
     </div>
@@ -290,12 +290,11 @@ dialog header h2{margin:0;font-size:19px}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, runTransaction, collection, query, orderBy, getDocs, where, serverTimestamp }
+import { getFirestore, doc, collection, runTransaction, query, orderBy, getDocs, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
+import { getStorage, ref as storageRef, uploadBytes, getBytes }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-/* ============ FIREBASE CONFIG ============ */
 const firebaseConfig = {
   apiKey: "AIzaSyCxNyB1lb-Zs7ZFqrvRLZIHG7oR91T6DHM",
   authDomain: "tedarikcilist.firebaseapp.com",
@@ -305,431 +304,439 @@ const firebaseConfig = {
   appId: "1:133928385235:web:76b9ace55ab2847df17226"
 };
 const SRV_EMAIL = "srv@iceinox.com";
-const SRV_PASS  = "Sena_2003";
-const MAX_FILES = 2, MAX_FILE_SIZE = 8 * 1024 * 1024;
+const MAX_FILES = 2;
+const MAX_FILE_SIZE = 8 * 1024 * 1024;
+const ALLOWED = new Set([
+  "application/pdf", "image/jpeg", "image/png", "image/webp", "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+]);
+const EXT = {
+  pdf: "application/pdf", jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp",
+  doc: "application/msword",
+  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  xls: "application/vnd.ms-excel",
+  xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+};
+const LEGAL = ["anonimsirketi", "limitedsirketi", "ltdsti", "limited", "anonim", "ltd", "sti", "as"];
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-/* ============ HELPERS ============ */
 const $ = (id) => document.getElementById(id);
-const toast = (msg, isErr = false) => {
+let selectedFiles = [];
+let recordsCache = [];
+
+function toast(message, isErr = false) {
   const el = document.createElement("div");
   el.className = "toast" + (isErr ? " err" : "");
-  el.textContent = msg;
+  el.textContent = message;
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 4000);
-};
-const showErr = (id, msg) => { const el = $(id); if (!el) return; el.textContent = msg; el.hidden = !msg; };
-const normalizePhone = (raw) => {
-  let d = (raw || "").replace(/\D/g, "");
-  if (d.startsWith("90") && d.length === 12) d = d.slice(2);
-  if (d.startsWith("0") && d.length === 11) d = d.slice(1);
-  return d;
-};
-const normalizeCompanyKey = (name) =>
-  (name || "").toLowerCase()
-    .replace(/\b(a\.?\s*ş\.?|ltd\.?\s*şti\.?|limited|şirketi|anonim\s*şirketi|aş|ltd|şti)\b/g, "")
-    .replace(/[çğıöşü]/g, c => ({"ç":"c","ğ":"g","ı":"i","ö":"o","ş":"s","ü":"u"}[c] || c))
-    .replace(/[^a-z0-9]+/g, "")
-    .slice(0, 120);
-const randomId = (n = 20) => {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let s = "";
-  const buf = new Uint8Array(n);
-  crypto.getRandomValues(buf);
-  for (let i = 0; i < n; i++) s += chars[buf[i] % chars.length];
-  return s;
-};
-
-/* ============ AUTH ============ */
-async function ensureAnon() {
-  if (!auth.currentUser) {
-    try { await signInAnonymously(auth); }
-    catch (e) {
-      console.error(e);
-      throw new Error("Anonim giriş açılamadı. Firebase Authentication'da Anonymous'u etkinleştirin.");
+}
+function showErr(id, message) {
+  const el = $(id);
+  if (!el) return;
+  el.textContent = message || "";
+  el.hidden = !message;
+}
+function codeOf(error) {
+  return String(error?.code || "");
+}
+function authMessage(error) {
+  const code = codeOf(error);
+  if (code.includes("invalid-credential") || code.includes("wrong-password") || code.includes("user-not-found") || code.includes("invalid-login")) return "Parola hatalı.";
+  if (code.includes("configuration-not-found")) return "Firebase Authentication henüz açılmamış. Email/Password ve Anonymous yöntemlerini açın.";
+  if (code.includes("operation-not-allowed")) return "Email/Password veya Anonymous kapalı. Firebase konsolundan ikisini de açın.";
+  if (code.includes("unauthorized-domain")) return "Bu site adresi yetkili alan adlarında yok. iceinoxyazilim.github.io adresini ekleyin.";
+  if (code.includes("permission-denied")) return "Bu firmaya ait bu telefon numarasıyla daha önce kayıt oluşturulmuş. Kurallar yayınlı değilse kayıt da bu yüzden durur.";
+  return "İşlem tamamlanamadı. Bağlantınızı ve kuralları kontrol edin.";
+}
+function fold(value) {
+  return value.trim().replace(/İ/g, "i").replace(/I/g, "ı").toLocaleLowerCase("tr-TR").replace(/ı/g, "i").normalize("NFD").replace(/\p{M}/gu, "").replace(/[^a-z0-9]/g, "");
+}
+function companyKey(name) {
+  let key = fold(name);
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const suffix of LEGAL) {
+      if (key.endsWith(suffix) && key.length - suffix.length >= 3) {
+        key = key.slice(0, -suffix.length);
+        changed = true;
+        break;
+      }
     }
   }
-  return auth.currentUser;
+  return key;
 }
-async function isSrvUser() {
-  const u = auth.currentUser;
-  if (!u || !u.email) return false;
-  return u.email.toLowerCase() === SRV_EMAIL.toLowerCase();
+function phoneKey(input) {
+  let digits = input.replace(/\D/g, "");
+  if (digits.startsWith("0090")) digits = digits.slice(4);
+  else if (digits.startsWith("90") && digits.length >= 12) digits = digits.slice(2);
+  if (digits.startsWith("0") && digits.length === 11) digits = digits.slice(1);
+  return digits;
+}
+function fileType(file) {
+  if (ALLOWED.has(file.type)) return file.type;
+  const ext = file.name.split(".").pop()?.toLowerCase() || "";
+  return EXT[ext] || "";
+}
+function objectName(file, index) {
+  const ext = (file.name.split(".").pop() || "dosya").toLowerCase();
+  const safe = /^[a-z0-9]+$/.test(ext) ? ext : "dosya";
+  return `${Date.now()}-${index}.${safe}`;
+}
+function addLine(label, value) {
+  const title = document.createElement("strong");
+  title.textContent = label;
+  const text = document.createElement("p");
+  text.textContent = value;
+  return [title, text];
 }
 
-/* ============ KVKK ============ */
-const KVKK_TEXT = `
-<p><strong>Veri sorumlusu:</strong> İCEİNOX</p>
-<p><strong>İşlenen veriler:</strong> Ad, soyad, firma adı, telefon, e-posta, ülke/il/ilçe, açık adres, faaliyet konusu, notlar ve yüklediğiniz katalog dosyaları.</p>
-<p><strong>Amaç:</strong> Tedarikçi kayıtlarının oluşturulması, iletişim ve tedarik süreçlerinin yürütülmesi.</p>
-<p><strong>Hukuki sebep:</strong> KVKK m.5/2-c (sözleşmenin kurulması) ve m.5/2-f (meşru menfaat).</p>
-<p><strong>Saklama:</strong> Kayıtlar silinemez olarak tutulur; yalnızca yetkili SRV kullanıcısı erişebilir.</p>
-<p><strong>Haklarınız:</strong> KVKK m.11 kapsamındaki haklarınızı İCEİNOX'a iletebilirsiniz.</p>
-<p>Kaydı onaylayarak yukarıdaki metni okuduğunuzu kabul etmiş olursunuz.</p>
-`;
-$("kvkk-body").innerHTML = KVKK_TEXT;
+const kvkkBody = $("kvkk-body");
+for (const [title, text] of [
+  ["Veri sorumlusu", "İCEİNOX. Başvurularınızı kvkk@iceinox.com adresine iletebilirsiniz."],
+  ["İşlenen veriler", "Ad, soyad, firma adı, telefon, e-posta, ülke, il, ilçe, açık adres, faaliyet, not ve katalog. Form kullanıcı adı veya parola istemez."],
+  ["Amaç", "Tedarikçi kaydının alınması, sizinle iletişim ve olası ticari ilişkinin yürütülmesi."],
+  ["Saklama", "Kayıtlar listeden silinemez. Yalnız SRV görür. Kanun’dan doğan başvuru hakkınız sürer."]
+]) {
+  kvkkBody.append(...addLine(title, text));
+}
 
-/* ============ FORM: telephones/emails repeat ============ */
-function addPhoneRow() {
-  const list = $("phone-list");
+function addRepeat(listId, type, placeholder) {
+  const list = $(listId);
   if (list.children.length >= 8) return;
-  const div = document.createElement("div");
-  div.className = "repeat-row";
-  div.innerHTML = `<input type="tel" inputmode="tel" placeholder="05xx xxx xx xx" aria-label="Telefon ${list.children.length+1}" />
-    <button class="ghost" type="button">Sil</button>`;
-  div.querySelector("button").onclick = () => { if (list.children.length > 1) div.remove(); };
-  list.appendChild(div);
+  const row = document.createElement("div");
+  row.className = "repeat-row";
+  const input = document.createElement("input");
+  input.type = type;
+  input.placeholder = placeholder;
+  const remove = document.createElement("button");
+  remove.type = "button";
+  remove.className = "ghost";
+  remove.textContent = "Sil";
+  remove.onclick = () => { if (list.children.length > 1) row.remove(); };
+  row.append(input, remove);
+  list.append(row);
 }
-function addEmailRow() {
-  const list = $("email-list");
-  if (list.children.length >= 8) return;
-  const div = document.createElement("div");
-  div.className = "repeat-row";
-  div.innerHTML = `<input type="email" inputmode="email" placeholder="firma@ornek.com" aria-label="E-posta ${list.children.length+1}" />
-    <button class="ghost" type="button">Sil</button>`;
-  div.querySelector("button").onclick = () => { if (list.children.length > 1) div.remove(); };
-  list.appendChild(div);
-}
-$("add-phone").onclick = addPhoneRow;
-$("add-email").onclick = addEmailRow;
+$("add-phone").onclick = () => addRepeat("phone-list", "tel", "05xx xxx xx xx");
+$("add-email").onclick = () => addRepeat("email-list", "email", "firma@ornek.com");
 
-/* ============ FILES ============ */
-let selectedFiles = [];
-const fileList = $("file-list");
 function renderFiles() {
-  fileList.innerHTML = "";
-  selectedFiles.forEach((f, i) => {
-    const li = document.createElement("li");
-    li.innerHTML = `<span>${f.name} <span class="muted">(${(f.size/1024/1024).toFixed(1)} MB)</span></span>
-      <button type="button">Kaldır</button>`;
-    li.querySelector("button").onclick = () => { selectedFiles.splice(i, 1); renderFiles(); };
-    fileList.appendChild(li);
+  const list = $("file-list");
+  list.replaceChildren();
+  selectedFiles.forEach((file, index) => {
+    const item = document.createElement("li");
+    const name = document.createElement("span");
+    name.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`;
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.textContent = "Kaldır";
+    remove.onclick = () => { selectedFiles.splice(index, 1); renderFiles(); };
+    item.append(name, remove);
+    list.append(item);
   });
 }
-function handleFiles(fileListObj) {
+function takeFiles(list) {
   showErr("error-files", "");
-  for (const f of fileListObj) {
-    if (selectedFiles.length >= MAX_FILES) { showErr("error-files", `En fazla ${MAX_FILES} dosya ekleyebilirsiniz.`); break; }
-    if (f.size > MAX_FILE_SIZE) { showErr("error-files", `${f.name} 8 MB'tan büyük.`); continue; }
-    if (!selectedFiles.some(x => x.name === f.name && x.size === f.size)) selectedFiles.push(f);
+  for (const file of list) {
+    if (selectedFiles.length >= MAX_FILES) { showErr("error-files", "En fazla 2 dosya eklenebilir."); break; }
+    if (file.size <= 0 || file.size > MAX_FILE_SIZE) { showErr("error-files", `${file.name} 8 MB sınırına uymuyor.`); continue; }
+    if (!fileType(file)) { showErr("error-files", `${file.name} desteklenmiyor.`); continue; }
+    selectedFiles.push(file);
   }
   renderFiles();
 }
-$("catalog").onchange = (e) => handleFiles(e.target.files);
+$("catalog").onchange = (event) => { takeFiles(event.target.files); event.target.value = ""; };
 const drop = $("drop-zone");
-["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
-["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
-drop.addEventListener("drop", e => handleFiles(e.dataTransfer.files));
+["dragenter", "dragover"].forEach((name) => drop.addEventListener(name, (event) => { event.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach((name) => drop.addEventListener(name, (event) => { event.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", (event) => takeFiles(event.dataTransfer.files));
 
-/* ============ KVKK dialog gate ============ */
 $("open-kvkk").onclick = () => {
-  const dlg = $("kvkk-dialog");
-  dlg.showModal();
-  dlg.addEventListener("close", () => {
-    const cb = $("kvkk");
-    if (cb.disabled) { cb.disabled = false; $("kvkk-hint").textContent = "Onay kutusu artık kullanılabilir."; }
-  }, { once: true });
+  $("kvkk-dialog").showModal();
+  $("kvkk").disabled = false;
+  $("kvkk-hint").textContent = "Onay kutusu artık kullanılabilir.";
 };
 
-/* ============ SUBMIT ============ */
-$("supplier-form").onsubmit = async (e) => {
-  e.preventDefault();
-  showErr("form-error", "");
-  ["error-firstName","error-lastName","error-companyName","error-products",
-   "error-phones","error-emails","error-country","error-city","error-district",
-   "error-address","error-kvkk","error-files"].forEach(id => showErr(id, ""));
+async function ensureAnon() {
+  if (auth.currentUser?.isAnonymous) return auth.currentUser;
+  if (auth.currentUser?.email?.toLowerCase() === SRV_EMAIL) throw new Error("SRV oturumunu kapatıp formu öyle gönderin.");
+  return (await signInAnonymously(auth)).user;
+}
 
+$("supplier-form").onsubmit = async (event) => {
+  event.preventDefault();
+  ["error-firstName", "error-lastName", "error-companyName", "error-products", "error-phones", "error-emails", "error-country", "error-city", "error-district", "error-address", "error-notes", "error-kvkk", "error-files", "form-error"].forEach((id) => showErr(id, ""));
   const firstName = $("firstName").value.trim();
-  const lastName  = $("lastName").value.trim();
+  const lastName = $("lastName").value.trim();
   const companyName = $("companyName").value.trim();
-  const products  = $("products").value.trim();
-  const country   = $("country").value.trim();
-  const city      = $("city").value.trim();
-  const district  = $("district").value.trim();
-  const address   = $("address").value.trim();
-  const notes     = $("notes").value.trim();
-  const kvkk      = $("kvkk").checked;
-
-  const phonesRaw = [...document.querySelectorAll("#phone-list input")].map(i => i.value.trim()).filter(Boolean);
-  const emailsRaw = [...document.querySelectorAll("#email-list input")].map(i => i.value.trim()).filter(Boolean);
-  const phones    = phonesRaw.map(normalizePhone);
-  const emails    = emailsRaw.map(s => s.toLowerCase());
-
+  const products = $("products").value.trim();
+  const country = $("country").value.trim();
+  const city = $("city").value.trim();
+  const district = $("district").value.trim();
+  const address = $("address").value.trim();
+  const notes = $("notes").value.trim();
+  const phones = [...document.querySelectorAll("#phone-list input")].map((input) => phoneKey(input.value)).filter(Boolean);
+  const emails = [...document.querySelectorAll("#email-list input")].map((input) => input.value.trim()).filter(Boolean);
+  const key = companyKey(companyName);
   let ok = true;
-  const fail = (id, msg) => { showErr(id, msg); ok = false; };
-
+  const fail = (id, message) => { showErr(id, message); ok = false; };
   if (firstName.length < 2 || firstName.length > 60) fail("error-firstName", "Ad 2–60 karakter olmalı.");
   if (lastName.length < 2 || lastName.length > 60) fail("error-lastName", "Soyad 2–60 karakter olmalı.");
-  if (companyName.length < 2 || companyName.length > 160) fail("error-companyName", "Firma adı 2–160 karakter olmalı.");
-  if (products.length < 3 || products.length > 2000) fail("error-products", "Faaliyet konusu 3–2000 karakter olmalı.");
-  if (phones.length < 1 || phones.length > 8) fail("error-phones", "En az 1, en fazla 8 telefon girin.");
-  else if (phones.some(p => !/^[0-9]{10,15}$/.test(p))) fail("error-phones", "Telefonlar 10–15 haneli olmalı (örn. 5xxxxxxxxx).");
-  else if (new Set(phones).size !== phones.length) fail("error-phones", "Aynı telefonu birden fazla girmeyin.");
-  if (emails.length < 1 || emails.length > 8) fail("error-emails", "En az 1, en fazla 8 e-posta girin.");
-  else if (emails.some(em => !/^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/.test(em))) fail("error-emails", "Geçerli bir e-posta girin.");
-  else if (new Set(emails).size !== emails.length) fail("error-emails", "Aynı e-postayı birden fazla girmeyin.");
-  if (country.length < 2 || country.length > 80) fail("error-country", "Ülke 2–80 karakter olmalı.");
-  if (city.length < 2 || city.length > 80) fail("error-city", "İl 2–80 karakter olmalı.");
-  if (district.length < 2 || district.length > 80) fail("error-district", "İlçe 2–80 karakter olmalı.");
-  if (address.length < 8 || address.length > 400) fail("error-address", "Adres 8–400 karakter olmalı.");
-  if (!kvkk) fail("error-kvkk", "KVKK metnini onaylamanız gerekli.");
+  if (companyName.length < 2 || companyName.length > 160 || key.length < 2) fail("error-companyName", "Firma adını açık yazın.");
+  if (products.length < 3 || products.length > 2000) fail("error-products", "Ne sattığınızı kısaca yazın.");
+  if (!phones.length || phones.length > 8) fail("error-phones", "En az bir telefon yazın.");
+  else if (phones.some((phone) => !/^[0-9]{10,15}$/.test(phone))) fail("error-phones", "Telefonları alan koduyla yazın.");
+  else if (new Set(phones).size !== phones.length) fail("error-phones", "Aynı telefon iki kez yazılmış.");
+  if (!emails.length || emails.length > 8) fail("error-emails", "En az bir e-posta yazın.");
+  else if (emails.some((email) => !/^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/.test(email))) fail("error-emails", "E-posta adreslerini kontrol edin.");
+  if (country.length < 2 || country.length > 80) fail("error-country", "Ülke yazın.");
+  if (city.length < 2 || city.length > 80) fail("error-city", "İl yazın.");
+  if (district.length < 2 || district.length > 80) fail("error-district", "İlçe yazın.");
+  if (address.length < 8 || address.length > 400) fail("error-address", "Açık adresi mahalle ve kapı numarasıyla yazın.");
+  if (notes.length > 2000) fail("error-notes", "Not 2000 karakteri aşamaz.");
+  if (!$("kvkk").checked) fail("error-kvkk", "KVKK metnini açıp onaylayın.");
+  if (!ok) return;
 
-  if (!ok) { $("form-error").textContent = "Lütfen işaretli alanları düzeltin."; $("form-error").hidden = false; return; }
-
-  const btn = $("save-button");
-  btn.disabled = true; btn.textContent = "Kaydediliyor...";
-
+  const button = $("save-button");
+  button.disabled = true;
+  button.textContent = "Kaydediliyor...";
   try {
     const user = await ensureAnon();
-    const uid = user.uid;
-    const supplierId = randomId(20);
-    const companyKey = normalizeCompanyKey(companyName);
-
-    /* 1) usage sayacı (kural: en fazla 10) */
-    const usageRef = doc(db, "usage", uid);
+    const supplierRef = doc(collection(db, "suppliers"));
+    const supplierId = supplierRef.id;
+    const keyIds = phones.map((phone) => `${key}__${phone}`);
+    const catalogs = selectedFiles.map((file, index) => ({
+      name: file.name.slice(0, 120),
+      size: file.size,
+      contentType: fileType(file),
+      storagePath: `catalogs/${user.uid}/${supplierId}/${objectName(file, index)}`
+    }));
+    const saved = { firstName, lastName, companyName, phones, emails, country, city, district, address, products, notes, catalogs };
     await runTransaction(db, async (tx) => {
-      const snap = await tx.get(usageRef);
-      if (snap.exists()) {
-        const c = snap.data().count || 0;
-        if (c >= 10) throw new Error("Bu tarayıcıdan en fazla 10 kayıt oluşturulabilir.");
-        tx.update(usageRef, { count: c + 1, updatedAt: serverTimestamp() });
-      } else {
-        tx.set(usageRef, { count: 1, updatedAt: serverTimestamp() });
-      }
-    });
-
-    /* 2) Telefon/firma benzersizliği: supplierKeys koleksiyonu */
-    const keyIds = [];
-    for (const phone of phones) {
-      const keyId = `${companyKey}__${phone}`;
-      const kSnap = await getDoc(doc(db, "supplierKeys", keyId));
-      if (kSnap.exists()) {
-        throw new Error(`Bu firma için ${phone} numarası zaten kayıtlı. Aynı numarayla ikinci kayıt yapılamaz.`);
-      }
-      keyIds.push(keyId);
-    }
-
-    /* 3) Katalog yükleme */
-    const catalogs = [];
-    for (const file of selectedFiles) {
-      const safeName = file.name.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 60);
-      const path = `catalogs/${uid}/${supplierId}/${safeName}`;
-      const sref = sRef(storage, path);
-      await uploadBytes(sref, file, { contentType: file.type });
-      const url = await getDownloadURL(sref);
-      catalogs.push({ name: file.name.slice(0,120), size: file.size, contentType: file.type, storagePath: path, url });
-    }
-
-    /* 4) supplier dokümanı */
-    const supplierDoc = {
-      firstName, lastName, companyName, companyKey,
-      phones, phoneKeys: phones, emails,
-      country, city, district, address,
-      products, notes,
-      catalogs,
-      kvkkAccepted: true,
-      kvkkAcceptedAt: serverTimestamp(),
-      createdAt: serverTimestamp(),
-      createdBy: uid,
-      keyIds
-    };
-    await setDoc(doc(db, "suppliers", supplierId), supplierDoc);
-
-    /* 5) supplierKeys dokümanları */
-    for (const keyId of keyIds) {
-      await setDoc(doc(db, "supplierKeys", keyId), {
-        supplierId,
-        createdAt: serverTimestamp()
+      const usageRef = doc(db, "usage", user.uid);
+      const usageSnap = await tx.get(usageRef);
+      const count = usageSnap.exists() ? Number(usageSnap.data().count) : 0;
+      if (count >= 10) throw new Error("Bu tarayıcıdan en fazla 10 kayıt gönderilebilir.");
+      tx.set(usageRef, { count: count + 1, updatedAt: serverTimestamp() });
+      tx.set(supplierRef, {
+        ...saved,
+        companyKey: key,
+        phoneKeys: phones,
+        kvkkAccepted: true,
+        kvkkAcceptedAt: serverTimestamp(),
+        createdAt: serverTimestamp(),
+        createdBy: user.uid,
+        keyIds
       });
+      keyIds.forEach((keyId) => tx.set(doc(db, "supplierKeys", keyId), { supplierId, createdAt: serverTimestamp() }));
+    });
+    let warning = "";
+    try {
+      for (let index = 0; index < selectedFiles.length; index += 1) {
+        const catalog = catalogs[index];
+        await uploadBytes(storageRef(storage, catalog.storagePath), selectedFiles[index], { contentType: catalog.contentType });
+      }
+    } catch {
+      warning = "Kayıt listeye alındı. Katalog dosyası yüklenemedi.";
     }
-
-    showLetter(supplierDoc);
+    showLetter(saved, warning);
     toast("Kaydınız alındı.");
-  } catch (err) {
-    console.error(err);
-    $("form-error").textContent = err.message || "Kayıt sırasında hata oluştu.";
-    $("form-error").hidden = false;
+  } catch (error) {
+    console.error(error);
+    showErr("form-error", error instanceof Error && !codeOf(error) ? error.message : authMessage(error));
   } finally {
-    btn.disabled = false; btn.textContent = "Kaydet";
+    button.disabled = false;
+    button.textContent = "Kaydet";
   }
 };
 
-function showLetter(data) {
+function showLetter(data, warning) {
   $("supplier-form").hidden = true;
   $("letter-view").hidden = false;
   $("lede").hidden = true;
-  const d = new Date();
-  $("letter-date").textContent = d.toLocaleString("tr-TR");
-  $("letter-body").innerHTML = `
-    <p><strong>Yetkili</strong>${data.firstName} ${data.lastName}</p>
-    <p><strong>Firma</strong>${data.companyName}</p>
-    <p><strong>Telefon</strong>${data.phones.join(", ")}</p>
-    <p><strong>E-posta</strong>${data.emails.join(", ")}</p>
-    <p><strong>Adres</strong>${data.country} / ${data.city} / ${data.district}<br>${data.address}</p>
-    <p><strong>Faaliyet</strong>${data.products}</p>
-    ${data.notes ? `<p><strong>Not</strong>${data.notes}</p>` : ""}
-    <p><strong>Katalog</strong>${data.catalogs.length ? data.catalogs.map(c => c.name).join(", ") : "Yok"}</p>
-  `;
+  $("letter-date").textContent = new Intl.DateTimeFormat("tr-TR", { timeZone: "Europe/Istanbul", dateStyle: "long" }).format(new Date()) + ", İstanbul";
+  const body = $("letter-body");
+  body.replaceChildren();
+  const lines = [
+    ["Yetkili", `${data.firstName} ${data.lastName}`],
+    ["Firma", data.companyName],
+    ["Telefon", data.phones.join(", ")],
+    ["E-posta", data.emails.join(", ")],
+    ["Adres", `${data.country} / ${data.city} / ${data.district} — ${data.address}`],
+    ["Faaliyet", data.products],
+    ["Not", data.notes || "Yok"],
+    ["Katalog", data.catalogs.length ? data.catalogs.map((file) => file.name).join(", ") : "Yok"]
+  ];
+  for (const [label, value] of lines) {
+    const paragraph = document.createElement("p");
+    const title = document.createElement("strong");
+    title.textContent = label;
+    paragraph.append(title, document.createTextNode(value));
+    body.append(paragraph);
+  }
+  showErr("letter-warning", warning);
 }
 $("another").onclick = () => {
   $("letter-view").hidden = true;
   $("supplier-form").hidden = false;
   $("lede").hidden = false;
   $("supplier-form").reset();
-  selectedFiles = []; renderFiles();
+  $("country").value = "Türkiye";
+  for (const id of ["phone-list", "email-list"]) {
+    const rows = [...$(id).children];
+    rows.slice(1).forEach((row) => row.remove());
+  }
+  selectedFiles = [];
+  renderFiles();
   $("kvkk").disabled = true;
+  $("kvkk").checked = false;
   $("kvkk-hint").textContent = "Onay kutusu, metin açıldıktan sonra kullanılabilir.";
-  window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
-/* ============ SRV DIALOG & LOGIN ============ */
-const srvDialog = $("srv-dialog");
 $("srv-entry").onclick = () => {
-  $("srv-error").hidden = true;
+  showErr("srv-error", "");
   $("srv-password").value = "";
-  srvDialog.showModal();
+  $("srv-dialog").showModal();
 };
-$("srv-cancel").onclick = () => srvDialog.close();
-
-$("srv-form").onsubmit = async (e) => {
-  e.preventDefault();
-  $("srv-error").hidden = true;
-  const pwd = $("srv-password").value;
-  if (pwd !== SRV_PASS) {
-    $("srv-error").textContent = "Parola hatalı.";
-    $("srv-error").hidden = false;
-    return;
-  }
+$("srv-cancel").onclick = () => $("srv-dialog").close();
+$("srv-form").onsubmit = async (event) => {
+  event.preventDefault();
+  showErr("srv-error", "");
+  const button = $("srv-submit");
+  button.disabled = true;
   try {
-    await signInWithEmailAndPassword(auth, SRV_EMAIL, SRV_PASS);
-    srvDialog.close();
-  } catch (err) {
-    console.error(err);
-    $("srv-error").textContent = "Giriş başarısız: " + (err.message || "bilinmeyen hata");
-    $("srv-error").hidden = false;
+    await signInWithEmailAndPassword(auth, SRV_EMAIL, $("srv-password").value);
+    $("srv-password").value = "";
+    $("srv-dialog").close();
+  } catch (error) {
+    showErr("srv-error", authMessage(error));
+  } finally {
+    button.disabled = false;
   }
 };
+$("srv-logout").onclick = () => signOut(auth);
 
-$("srv-logout").onclick = async () => {
-  await signOut(auth);
-  // Anonim oturuma geri dön
-  await ensureAnon();
-};
-
-/* ============ SRV VIEW / LOAD ============ */
-let recordsCache = [];
-
+function formatWhen(value) {
+  const date = value?.toDate ? value.toDate() : null;
+  if (!date) return "Tarih işleniyor";
+  return new Intl.DateTimeFormat("tr-TR", { timeZone: "Europe/Istanbul", dateStyle: "long", timeStyle: "short" }).format(date);
+}
 async function loadRecords() {
-  $("list-error").hidden = true;
-  $("list-empty").hidden = true;
-  $("record-rows").innerHTML = "";
-  $("record-cards").innerHTML = "";
-  $("record-count").textContent = "Yükleniyor...";
+  showErr("list-error", "");
+  $("record-count").textContent = "Yükleniyor";
   try {
-    const q = query(collection(db, "suppliers"), orderBy("createdAt", "desc"));
-    const snap = await getDocs(q);
-    recordsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const snap = await getDocs(query(collection(db, "suppliers"), orderBy("createdAt", "desc")));
+    recordsCache = snap.docs.map((item) => ({ id: item.id, ...item.data() }));
     renderRecords(recordsCache);
-  } catch (err) {
-    console.error(err);
-    $("list-error").textContent = "Kayıtlar yüklenemedi: " + (err.message || "");
-    $("list-error").hidden = false;
+  } catch (error) {
+    console.error(error);
+    showErr("list-error", "Kayıtlar yüklenemedi. SRV oturumunu ve Firestore kurallarını kontrol edin.");
     $("record-count").textContent = "0 kayıt";
   }
 }
-
-function fmtDate(ts) {
-  if (!ts) return "-";
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
-  return d.toLocaleString("tr-TR");
-}
-
 function renderRecords(list) {
   $("record-count").textContent = `${list.length} kayıt`;
-  const rows = $("record-rows"), cards = $("record-cards");
-  rows.innerHTML = ""; cards.innerHTML = "";
-  if (!list.length) { $("list-empty").hidden = false; return; }
-  $("list-empty").hidden = true;
-
-  list.forEach(rec => {
+  const rows = $("record-rows");
+  const cards = $("record-cards");
+  rows.replaceChildren();
+  cards.replaceChildren();
+  $("list-empty").hidden = list.length > 0;
+  for (const record of list) {
+    const cells = [record.companyName || "", `${record.firstName || ""} ${record.lastName || ""}`.trim(), (record.phones || []).join(", "), record.city || "", formatWhen(record.createdAt)];
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${escapeHtml(rec.companyName || "")}</td>
-      <td>${escapeHtml((rec.firstName||"") + " " + (rec.lastName||""))}</td>
-      <td>${escapeHtml((rec.phones || []).join(", "))}</td>
-      <td>${escapeHtml(rec.city || "")}</td>
-      <td>${fmtDate(rec.createdAt)}</td>`;
-    tr.onclick = () => showDetail(rec);
-    rows.appendChild(tr);
-
-    const li = document.createElement("li");
-    li.innerHTML = `<strong>${escapeHtml(rec.companyName||"")}</strong><br>
-      ${escapeHtml((rec.firstName||"") + " " + (rec.lastName||""))} ·
-      ${escapeHtml((rec.phones||[]).join(", "))}<br>
-      ${escapeHtml(rec.city||"")} · ${fmtDate(rec.createdAt)}`;
-    li.onclick = () => showDetail(rec);
-    cards.appendChild(li);
-  });
+    for (const value of cells) {
+      const td = document.createElement("td");
+      td.textContent = value;
+      tr.append(td);
+    }
+    tr.onclick = () => showDetail(record);
+    rows.append(tr);
+    const item = document.createElement("li");
+    item.textContent = `${cells[0]} — ${cells[1]} — ${cells[2]} — ${cells[4]}`;
+    item.onclick = () => showDetail(record);
+    cards.append(item);
+  }
 }
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+async function downloadCatalog(file, host) {
+  if (!String(file.storagePath || "").startsWith("catalogs/")) return;
+  try {
+    const bytes = await getBytes(storageRef(storage, file.storagePath));
+    const url = URL.createObjectURL(new Blob([bytes], { type: file.contentType || "application/octet-stream" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = String(file.name || "katalog").replace(/[^\w.\- ]+/g, "").slice(0, 80) || "katalog";
+    link.click();
+    URL.revokeObjectURL(url);
+  } catch {
+    const note = document.createElement("span");
+    note.className = "field-error";
+    note.textContent = " Dosya açılamadı.";
+    host.append(note);
+  }
 }
-
-function showDetail(rec) {
-  $("detail-title").textContent = rec.companyName || "Kayıt";
-  const cats = (rec.catalogs || []).map(c =>
-    `<p><a href="${c.url}" target="_blank" rel="noopener">${escapeHtml(c.name)}</a> <span class="muted">(${(c.size/1024/1024).toFixed(1)} MB)</span></p>`
-  ).join("") || "<p class='muted'>Yok</p>";
-
-  $("detail-body").innerHTML = `
-    <strong>Yetkili</strong><p>${escapeHtml((rec.firstName||"") + " " + (rec.lastName||""))}</p>
-    <strong>Firma</strong><p>${escapeHtml(rec.companyName||"")}</p>
-    <strong>Telefon</strong><p>${escapeHtml((rec.phones||[]).join(", "))}</p>
-    <strong>E-posta</strong><p>${escapeHtml((rec.emails||[]).join(", "))}</p>
-    <strong>Adres</strong><p>${escapeHtml(rec.country||"")} / ${escapeHtml(rec.city||"")} / ${escapeHtml(rec.district||"")}<br>${escapeHtml(rec.address||"")}</p>
-    <strong>Faaliyet</strong><p>${escapeHtml(rec.products||"")}</p>
-    ${rec.notes ? `<strong>Not</strong><p>${escapeHtml(rec.notes)}</p>` : ""}
-    <strong>Katalog</strong>${cats}
-    <strong>Kayıt zamanı</strong><p>${fmtDate(rec.createdAt)}</p>
-    <strong>KVKK onayı</strong><p>${fmtDate(rec.kvkkAcceptedAt)}</p>
-  `;
+function showDetail(record) {
+  $("detail-title").textContent = record.companyName || "Kayıt";
+  const body = $("detail-body");
+  body.replaceChildren();
+  const fields = [
+    ["Yetkili", `${record.firstName || ""} ${record.lastName || ""}`.trim()],
+    ["Firma", record.companyName || ""],
+    ["Telefon", (record.phones || []).join(", ")],
+    ["E-posta", (record.emails || []).join(", ")],
+    ["Adres", `${record.country || ""} / ${record.city || ""} / ${record.district || ""} — ${record.address || ""}`],
+    ["Faaliyet", record.products || ""],
+    ["Not", record.notes || "Yok"],
+    ["Kayıt zamanı", formatWhen(record.createdAt)]
+  ];
+  for (const [label, value] of fields) body.append(...addLine(label, value));
+  const catalogTitle = document.createElement("strong");
+  catalogTitle.textContent = "Katalog";
+  body.append(catalogTitle);
+  if (!(record.catalogs || []).length) {
+    const empty = document.createElement("p");
+    empty.textContent = "Yok";
+    body.append(empty);
+  } else {
+    for (const file of record.catalogs) {
+      const paragraph = document.createElement("p");
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "link";
+      button.textContent = file.name || "katalog";
+      button.onclick = () => downloadCatalog(file, paragraph);
+      paragraph.append(button);
+      body.append(paragraph);
+    }
+  }
   $("detail-dialog").showModal();
 }
-
-$("search").oninput = (e) => {
-  const q = e.target.value.toLowerCase().trim();
-  if (!q) return renderRecords(recordsCache);
-  const filtered = recordsCache.filter(r => {
-    const hay = [
-      r.companyName, r.firstName, r.lastName, r.city, r.district, r.country,
-      ...(r.phones||[]), ...(r.emails||[])
-    ].join(" ").toLowerCase();
-    return hay.includes(q);
-  });
-  renderRecords(filtered);
+$("search").oninput = (event) => {
+  const term = event.target.value.toLocaleLowerCase("tr-TR").trim();
+  if (!term) return renderRecords(recordsCache);
+  renderRecords(recordsCache.filter((record) => [record.companyName, record.firstName, record.lastName, record.city, record.district, record.country, record.products, ...(record.phones || []), ...(record.emails || [])].join(" ").toLocaleLowerCase("tr-TR").includes(term)));
 };
 
-/* ============ AUTH STATE ROUTER ============ */
-onAuthStateChanged(auth, async (user) => {
-  if (!user) { ensureAnon().catch(e => toast(e.message, true)); return; }
-  const srv = await isSrvUser();
+onAuthStateChanged(auth, (user) => {
+  const srv = user?.email?.toLowerCase() === SRV_EMAIL;
+  $("srv-view").hidden = !srv;
+  $("srv-entry").hidden = srv;
   if (srv) {
-    $("kayit").querySelector("#supplier-form")?.setAttribute("hidden", "");
+    $("supplier-form").hidden = true;
     $("letter-view").hidden = true;
     $("lede").hidden = true;
-    $("srv-view").hidden = false;
-    $("srv-entry").hidden = true;
     loadRecords();
-  } else {
+    return;
+  }
+  if ($("letter-view").hidden) {
     $("supplier-form").hidden = false;
     $("lede").hidden = false;
-    $("srv-view").hidden = true;
-    $("srv-entry").hidden = false;
   }
 });
 </script>
