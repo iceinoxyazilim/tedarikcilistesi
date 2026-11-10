@@ -56,23 +56,36 @@ button.link { background: none; border: none; color: var(--primary); padding: 0;
 .check input { width: 18px; height: 18px; margin-top: 2px; }
 .check span { font-size: 14px; font-weight: 500; }
 .banner { background: #fee2e2; color: var(--danger); padding: 14px; border-radius: 8px; font-size: 14px; margin: 20px 32px 0; border: 1px solid #fecaca; text-align: center; font-weight: 500; }
+[hidden] { display: none !important; }
 .srv-panel { background: var(--card); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-.srv-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.srv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; flex-wrap: wrap; gap: 12px; }
 .srv-header h2 { color: var(--primary-dark); font-size: 22px; }
 .srv-header p { margin: 4px 0 0; font-size: 13px; color: var(--text-muted); }
-.search-box { width: 100%; margin-bottom: 20px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
-.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; display: none; }
+.srv-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+button.excel { background: #0f7a3a; color: #fff; border: none; padding: 10px 16px; font-size: 13px; }
+button.excel:hover { background: #0b5e2c; }
+button.excel:disabled { opacity: .55; cursor: not-allowed; }
+.srv-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.search-box { flex: 1; min-width: 220px; margin: 0; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
+.srv-count { font-size: 13px; font-weight: 600; color: var(--primary-dark); background: #e0f2fe; border-radius: 999px; padding: 8px 12px; white-space: nowrap; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; display: none; }
 @media (min-width: 769px) { .table-wrap { display: block; } }
 table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-th { background: #f8fafc; padding: 14px; font-weight: 600; color: var(--text-muted); font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-td { padding: 14px; border-bottom: 1px solid var(--border); }
+th { background: #0c1f4d; padding: 12px 14px; font-weight: 600; color: #fff; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
+td { padding: 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
 tbody tr { cursor: pointer; }
-tbody tr:hover { background: #f8fafc; }
+tbody tr:hover { background: #f4f9fd; }
+.kayit-no { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 700; color: #0c1f4d; background: #e0f2fe; border-radius: 6px; padding: 4px 8px; letter-spacing: .03em; }
+.firm { font-weight: 650; }
+.muted { color: var(--text-muted); font-size: 12px; display: block; margin-top: 2px; }
 .cards { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
 @media (min-width: 769px) { .cards { display: none; } }
-.cards li { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 16px; cursor: pointer; }
-.cards li strong { color: var(--primary); font-size: 16px; display: block; margin-bottom: 6px; }
-.cards li span { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 2px; }
+.cards li { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; }
+.card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+.cards li strong { color: var(--primary-dark); font-size: 16px; display: block; }
+.cards li span { font-size: 13px; color: var(--text-muted); display: block; margin-top: 3px; }
+.empty-state { text-align: center; padding: 28px 12px; color: var(--text-muted); }
 dialog { border: none; border-radius: 16px; padding: 0; width: calc(100% - 32px); max-width: 600px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); background: var(--card); color: var(--text); }
 dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
 .dialog-head { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
@@ -172,13 +185,27 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); }
   </article>
   <section class="srv-panel" id="srv-view" hidden>
     <div class="srv-header">
-      <div><h2>SRV Tedarikçi Paneli</h2><p>Kayıtlar görüntülenir. Bu ekrandan silinmez.</p></div>
-      <button class="ghost" id="srv-logout" type="button">Oturumu Kapat</button>
+      <div>
+        <h2>Tedarikçi Listesi</h2>
+        <p>Numara kayıt sırasındadır. T-0001 en eski kayıttır. Satıra tıklayınca tüm detay açılır.</p>
+      </div>
+      <div class="srv-actions">
+        <button class="excel" id="export-excel" type="button">Excel'e Aktar</button>
+        <button class="ghost" id="srv-logout" type="button">Oturumu Kapat</button>
+      </div>
     </div>
-    <input class="search-box" id="search" type="search" placeholder="Firma, yetkili, telefon veya il arayın..." />
+    <div class="srv-tools">
+      <input class="search-box" id="search" type="search" placeholder="Kayıt no, firma, yetkili, telefon veya il arayın..." />
+      <span class="srv-count" id="srv-count">0 kayıt</span>
+    </div>
     <p class="banner" id="list-error" hidden></p>
-    <p class="hint" id="list-empty" style="text-align:center;padding:20px" hidden>Henüz kayıtlı tedarikçi bulunmuyor.</p>
-    <div class="table-wrap"><table><thead><tr><th>Firma</th><th>Yetkili</th><th>Telefon</th><th>İl</th><th>Kayıt Tarihi</th></tr></thead><tbody id="record-rows"></tbody></table></div>
+    <p class="empty-state" id="list-empty" hidden>Henüz kayıtlı tedarikçi bulunmuyor.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Kayıt No</th><th>Firma</th><th>Yetkili</th><th>Telefon</th><th>İl</th><th>Tarih</th><th>Saat</th></tr></thead>
+        <tbody id="record-rows"></tbody>
+      </table>
+    </div>
     <ul class="cards" id="record-cards"></ul>
   </section>
 </main>
@@ -411,33 +438,139 @@ $("srv-form").onsubmit = async (event) => {
 };
 $("srv-logout").onclick = () => signOut(auth);
 
-function formatWhen(value) {
-  const date = value?.toDate ? value.toDate() : null;
-  if (!date) return "Tarih işleniyor";
-  return new Intl.DateTimeFormat("tr-TR", { timeZone: "Europe/Istanbul", dateStyle: "long", timeStyle: "short" }).format(date);
+let shownRecords = [];
+function createdDate(value) { return value?.toDate ? value.toDate() : null; }
+function istanbulParts(value) {
+  const date = createdDate(value);
+  if (!date) return { date: "—", time: "—", full: "Tarih işleniyor" };
+  const dateText = new Intl.DateTimeFormat("tr-TR", { timeZone: "Europe/Istanbul", day: "2-digit", month: "long", year: "numeric" }).format(date);
+  const timeText = new Intl.DateTimeFormat("tr-TR", { timeZone: "Europe/Istanbul", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(date);
+  return { date: dateText, time: timeText, full: `${dateText} ${timeText}` };
+}
+function stampNumbers(records) {
+  const ordered = [...records].sort((a, b) => {
+    const left = createdDate(a.createdAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+    const right = createdDate(b.createdAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+    return left - right || String(a.id).localeCompare(String(b.id));
+  });
+  ordered.forEach((record, index) => { record.kayitNo = `T-${String(index + 1).padStart(4, "0")}`; });
+}
+function textCell(row, column, value) {
+  const safe = String(value ?? "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "");
+  return `<c r="${column}${row}" t="inlineStr"><is><t xml:space="preserve">${safe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</t></is></c>`;
+}
+function columnName(index) {
+  let n = index + 1; let name = "";
+  while (n > 0) { const rem = (n - 1) % 26; name = String.fromCharCode(65 + rem) + name; n = Math.floor((n - 1) / 26); }
+  return name;
+}
+const CRC_TABLE = new Uint32Array(256).map((_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+function crc32(data) { let c = 0xffffffff; for (let i = 0; i < data.length; i++) c = CRC_TABLE[(c ^ data[i]) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+function u16(n) { return Uint8Array.of(n & 255, (n >>> 8) & 255); }
+function u32(n) { return Uint8Array.of(n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255); }
+function joinBytes(parts) { const out = new Uint8Array(parts.reduce((sum, part) => sum + part.length, 0)); let offset = 0; for (const part of parts) { out.set(part, offset); offset += part.length; } return out; }
+function zipStore(files) {
+  const locals = []; const central = []; let offset = 0;
+  for (const file of files) {
+    const name = new TextEncoder().encode(file.name);
+    const crc = crc32(file.data);
+    const local = joinBytes([u32(0x04034b50), u16(20), u16(0), u16(0), u16(0), u16(0), u32(crc), u32(file.data.length), u32(file.data.length), u16(name.length), u16(0), name, file.data]);
+    locals.push(local);
+    central.push(joinBytes([u32(0x02014b50), u16(20), u16(20), u16(0), u16(0), u16(0), u16(0), u32(crc), u32(file.data.length), u32(file.data.length), u16(name.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(offset), name]));
+    offset += local.length;
+  }
+  const directory = joinBytes(central);
+  const end = joinBytes([u32(0x06054b50), u16(0), u16(0), u16(files.length), u16(files.length), u32(directory.length), u32(offset), u16(0)]);
+  return new Blob([...locals, directory, end], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+}
+function workbookBlob(matrix) {
+  const encoder = new TextEncoder();
+  const lastColumn = columnName(matrix[0].length - 1);
+  const rows = matrix.map((line, rowIndex) => `<row r="${rowIndex + 1}">${line.map((value, columnIndex) => textCell(rowIndex + 1, columnName(columnIndex), value)).join("")}</row>`).join("");
+  const sheet = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:${lastColumn}${matrix.length}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/><cols><col min="1" max="${matrix[0].length}" width="22" customWidth="1"/></cols><sheetData>${rows}</sheetData><autoFilter ref="A1:${lastColumn}${matrix.length}"/></worksheet>`;
+  const files = {
+    "[Content_Types].xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`,
+    "_rels/.rels": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`,
+    "xl/workbook.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Tedarikçiler" sheetId="1" r:id="rId1"/></sheets></workbook>`,
+    "xl/_rels/workbook.xml.rels": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`,
+    "xl/styles.xml": `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="1"><font><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/></cellXfs></styleSheet>`,
+    "xl/worksheets/sheet1.xml": sheet
+  };
+  return zipStore(Object.entries(files).map(([name, xml]) => ({ name, data: encoder.encode(xml) })));
+}
+function exportMatrix(list) {
+  const ordered = [...list].sort((a, b) => a.kayitNo.localeCompare(b.kayitNo, "tr"));
+  const phoneCount = Math.max(1, ...ordered.map((record) => (record.phones || []).length));
+  const emailCount = Math.max(1, ...ordered.map((record) => (record.emails || []).length));
+  const headers = ["Kayıt No", "Kayıt Tarihi", "Kayıt Saati", "Ad", "Soyad", "Firma Adı", "Vergi Dairesi", "Vergi / TC No", "Web Sitesi"];
+  for (let i = 1; i <= phoneCount; i++) headers.push(phoneCount === 1 ? "Telefon" : `Telefon ${i}`);
+  for (let i = 1; i <= emailCount; i++) headers.push(emailCount === 1 ? "E-posta" : `E-posta ${i}`);
+  headers.push("Ülke", "İl", "İlçe", "Açık Adres", "Faaliyet Konusu", "Not", "Katalog 1", "Katalog 2", "KVKK");
+  const rows = ordered.map((record) => {
+    const when = istanbulParts(record.createdAt);
+    const phones = record.phones || [];
+    const emails = record.emails || [];
+    const catalogs = record.catalogs || [];
+    return [
+      record.kayitNo, when.date, when.time, record.firstName || "", record.lastName || "", record.companyName || "",
+      record.taxOffice || "", record.taxNumber || "", record.website || "",
+      ...Array.from({ length: phoneCount }, (_, index) => phones[index] || ""),
+      ...Array.from({ length: emailCount }, (_, index) => emails[index] || ""),
+      record.country || "", record.city || "", record.district || "", record.address || "", record.products || "", record.notes || "",
+      catalogs[0]?.name || "", catalogs[1]?.name || "", record.kvkkAccepted ? "Onaylandı" : ""
+    ];
+  });
+  return [headers, ...rows];
+}
+function downloadExcel() {
+  if (!shownRecords.length) return;
+  const stamp = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Istanbul", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(workbookBlob(exportMatrix(shownRecords)));
+  link.download = `ICEINOX-tedarikciler-${stamp}.xlsx`;
+  link.click();
+  URL.revokeObjectURL(link.href);
 }
 async function loadRecords() {
   showErr("list-error", "");
   try {
     const snap = await getDocs(query(collection(db, "suppliers"), orderBy("createdAt", "desc")));
     recordsCache = snap.docs.map((item) => ({ id: item.id, ...item.data() }));
+    stampNumbers(recordsCache);
     renderRecords(recordsCache);
   } catch (error) { console.error(error); showErr("list-error", "Kayıtlar yüklenemedi. SRV oturumunu ve kuralları kontrol edin."); }
 }
 function renderRecords(list) {
+  shownRecords = list;
   const rows = $("record-rows"); const cards = $("record-cards");
-  rows.replaceChildren(); cards.replaceChildren(); $("list-empty").hidden = list.length > 0;
+  rows.replaceChildren(); cards.replaceChildren();
+  $("list-empty").hidden = list.length > 0;
+  $("export-excel").disabled = list.length === 0;
+  $("srv-count").textContent = list.length === recordsCache.length ? `${recordsCache.length} kayıt` : `${list.length} / ${recordsCache.length} kayıt`;
   for (const record of list) {
-    const cells = [record.companyName || "", `${record.firstName || ""} ${record.lastName || ""}`.trim(), (record.phones || []).join(", "), record.city || "", formatWhen(record.createdAt)];
+    const when = istanbulParts(record.createdAt);
+    const who = `${record.firstName || ""} ${record.lastName || ""}`.trim();
+    const phone = (record.phones || []).join(", ");
     const tr = document.createElement("tr");
-    for (const value of cells) { const td = document.createElement("td"); td.textContent = value; tr.append(td); }
+    const no = document.createElement("td"); const badge = document.createElement("span"); badge.className = "kayit-no"; badge.textContent = record.kayitNo; no.append(badge);
+    const firm = document.createElement("td"); firm.className = "firm"; firm.textContent = record.companyName || "";
+    const person = document.createElement("td"); person.textContent = who;
+    const tel = document.createElement("td"); tel.textContent = phone;
+    const city = document.createElement("td"); city.textContent = record.city || "";
+    const day = document.createElement("td"); day.textContent = when.date;
+    const hour = document.createElement("td"); hour.textContent = when.time;
+    tr.append(no, firm, person, tel, city, day, hour);
     tr.onclick = () => showDetail(record); rows.append(tr);
     const item = document.createElement("li");
-    const strong = document.createElement("strong"); strong.textContent = cells[0];
-    const who = document.createElement("span"); who.textContent = cells[1];
-    const phone = document.createElement("span"); phone.textContent = cells[2];
-    const meta = document.createElement("span"); meta.textContent = `${cells[3]} • ${cells[4]}`;
-    item.append(strong, who, phone, meta); item.onclick = () => showDetail(record); cards.append(item);
+    const top = document.createElement("div"); top.className = "card-top";
+    const badge2 = document.createElement("span"); badge2.className = "kayit-no"; badge2.textContent = record.kayitNo;
+    const clock = document.createElement("span"); clock.textContent = `${when.date} · ${when.time}`;
+    top.append(badge2, clock);
+    const strong = document.createElement("strong"); strong.textContent = record.companyName || "";
+    const personLine = document.createElement("span"); personLine.textContent = who;
+    const phoneLine = document.createElement("span"); phoneLine.textContent = `${phone}${record.city ? " · " + record.city : ""}`;
+    item.append(top, strong, personLine, phoneLine); item.onclick = () => showDetail(record); cards.append(item);
   }
 }
 async function downloadCatalog(file, host) {
@@ -449,19 +582,21 @@ async function downloadCatalog(file, host) {
   } catch { const note = document.createElement("span"); note.className = "err"; note.textContent = " Dosya açılamadı."; host.append(note); }
 }
 function showDetail(record) {
-  $("detail-title").textContent = record.companyName || "Kayıt";
+  const when = istanbulParts(record.createdAt);
+  $("detail-title").textContent = `${record.kayitNo || "Kayıt"} · ${record.companyName || ""}`;
   const body = $("detail-body"); body.replaceChildren();
-  const fields = [["Yetkili", `${record.firstName || ""} ${record.lastName || ""}`.trim()], ["Firma", record.companyName || ""], ["Vergi", `${record.taxOffice || "—"} / ${record.taxNumber || "—"}`], ["Web", record.website || "—"], ["Telefon", (record.phones || []).join(", ")], ["E-posta", (record.emails || []).join(", ")], ["Adres", `${record.country || ""} / ${record.city || ""} / ${record.district || ""} — ${record.address || ""}`], ["Faaliyet", record.products || ""], ["Not", record.notes || "—"], ["Kayıt tarihi", formatWhen(record.createdAt)]];
+  const fields = [["Kayıt no", record.kayitNo || "—"], ["Kayıt tarihi", when.date], ["Kayıt saati", when.time], ["Yetkili", `${record.firstName || ""} ${record.lastName || ""}`.trim()], ["Firma", record.companyName || ""], ["Vergi", `${record.taxOffice || "—"} / ${record.taxNumber || "—"}`], ["Web", record.website || "—"], ["Telefon", (record.phones || []).join(", ")], ["E-posta", (record.emails || []).join(", ")], ["Adres", `${record.country || ""} / ${record.city || ""} / ${record.district || ""} — ${record.address || ""}`], ["Faaliyet", record.products || ""], ["Not", record.notes || "—"]];
   for (const [label, value] of fields) { const p = document.createElement("p"); const strong = document.createElement("strong"); strong.textContent = `${label}: `; p.append(strong, document.createTextNode(value)); body.append(p); }
   const catalogs = document.createElement("p"); const title = document.createElement("strong"); title.textContent = "Katalog: "; catalogs.append(title);
   if (!(record.catalogs || []).length) catalogs.append(document.createTextNode("Eklenmedi"));
   else for (const file of record.catalogs) { const button = document.createElement("button"); button.type = "button"; button.className = "link"; button.textContent = file.name || "katalog"; button.onclick = () => downloadCatalog(file, catalogs); catalogs.append(button, document.createTextNode(" ")); }
   body.append(catalogs); $("detail-dialog").showModal();
 }
+$("export-excel").onclick = downloadExcel;
 $("search").oninput = (event) => {
   const term = event.target.value.toLocaleLowerCase("tr-TR").trim();
   if (!term) return renderRecords(recordsCache);
-  renderRecords(recordsCache.filter((record) => [record.companyName, record.firstName, record.lastName, record.city, record.taxNumber, ...(record.phones || []), ...(record.emails || [])].join(" ").toLocaleLowerCase("tr-TR").includes(term)));
+  renderRecords(recordsCache.filter((record) => [record.kayitNo, record.companyName, record.firstName, record.lastName, record.city, record.taxNumber, record.taxOffice, record.products, ...(record.phones || []), ...(record.emails || [])].join(" ").toLocaleLowerCase("tr-TR").includes(term)));
 };
 onAuthStateChanged(auth, (user) => {
   const srv = user?.email?.toLowerCase() === SRV_EMAIL;
