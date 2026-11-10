@@ -8,17 +8,28 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-/* ... (Önceki CSS kodunuzun tamamı buraya gelecek, değişiklik yok) ... */
-:root { --primary: #005a9c; --primary-dark: #00427a; --bg: #f4f7f9; --card: #ffffff; --text: #1e293b; --text-muted: #64748b; --border: #e2e8f0; --danger: #e11d48; --success: #059669; }
+:root {
+  --primary: #005a9c; /* Sizin logonuzdaki mavi */
+  --primary-dark: #00427a;
+  --bg: #f4f7f9;
+  --card: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --danger: #e11d48;
+}
 * { box-sizing: border-box; }
 body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
 h1, h2, h3 { margin: 0; font-weight: 600; }
-.topbar { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-.topbar-inner { max-width: 900px; margin: 0 auto; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
-.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text); }
-.brand-logo { height: 40px; width: auto; }
-.srv-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-.srv-btn:hover { background: var(--bg); color: var(--text); }
+
+/* HEADER (Üst Kısım) */
+.topbar { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+.topbar-inner { max-width: 900px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
+.brand-logo { height: 48px; width: auto; display: block; }
+.srv-btn { background: #f8fafc; border: 1px solid var(--border); color: var(--text-muted); font-size: 13px; font-weight: 600; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+.srv-btn:hover { background: #e0f2fe; color: var(--primary); border-color: var(--primary); }
+
+/* GERİ KALAN TASARIM */
 .page { max-width: 900px; margin: 0 auto; padding: 30px 20px 80px; }
 .lede { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; text-align: center; }
 .sheet { background: var(--card); border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05); overflow: hidden; }
@@ -87,7 +98,7 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
 .dialog-body { padding: 24px; max-height: 70vh; overflow-y: auto; }
 .dialog-body p { margin: 0 0 12px; font-size: 14px; line-height: 1.6; }
 .letter { text-align: center; padding: 40px 20px; }
-.letter-icon { width: 64px; height: 64px; background: #dcfce7; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+.letter-icon { width: 64px; height: 64px; background: #dcfce7; color: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
 .letter h2 { font-size: 24px; color: var(--primary-dark); margin-bottom: 10px; }
 .letter p { color: var(--text-muted); margin-bottom: 24px; }
 .letter-details { background: #f8fafc; border-radius: 12px; padding: 20px; text-align: left; font-size: 14px; margin-bottom: 24px; }
@@ -104,13 +115,10 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="#">
-      <svg class="brand-logo" viewBox="0 0 320 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="30" cy="30" r="24" fill="#005a9c"/>
-        <path d="M30 14C25 14 21 18 21 23C21 28 25 31 28 36C30 39 31 42 30 46C29 42 30 39 32 36C35 31 39 28 39 23C39 18 35 14 30 14Z" fill="white"/>
-        <circle cx="30" cy="22" r="3" fill="#005a9c"/>
-        <text x="65" y="30" font-family="Arial, sans-serif" font-weight="900" font-size="26" fill="#005a9c" letter-spacing="0.5">İCEİNOX</text>
-        <text x="65" y="46" font-family="Arial, sans-serif" font-weight="600" font-size="10" fill="#64748b" letter-spacing="1.5">COMMERCIAL REFRIGERATORS</text>
-      </svg>
+      <!-- BURAYA KENDİ LOGO DOSYANIZI EKLEYİN -->
+      <!-- Örnek: <img src="logo.png" alt="İCEİNOX Logo" class="brand-logo"> -->
+      <!-- Eğer logoyu hemen görmek isterseniz yandaki linki kullanabilirsiniz, ancak kendi dosyanızı yüklemeniz daha sağlıklıdır -->
+      <img src="logo.png" alt="İCEİNOX Commercial Refrigerators" class="brand-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/1x1.png/1x1.png';"> 
     </a>
     <button class="srv-btn" id="srv-entry">SRV Girişi</button>
   </div>
@@ -306,7 +314,7 @@ async function ensureAnon() {
   if (auth.currentUser) return auth.currentUser;
   try { 
     await signInAnonymously(auth); 
-    await new Promise(resolve => setTimeout(resolve, 500)); // Race condition önlemi
+    await new Promise(resolve => setTimeout(resolve, 500)); 
     return auth.currentUser; 
   }
   catch (e) { 
@@ -318,7 +326,6 @@ async function isSrvUser() {
   return u && u.email && u.email.toLowerCase() === SRV_EMAIL.toLowerCase();
 }
 
-// ... (Dosya yükleme, form elemanları, KVKK ve diğer event listener'lar önceki kodla aynı) ...
 let selectedFiles = [];
 function handleFiles(files) {
   showErr("err-files", "");
@@ -362,7 +369,6 @@ function addRow(containerId, type, placeholder) {
 $("add-phone").onclick = () => addRow("phone-list", "tel", "05xx xxx xx xx");
 $("add-email").onclick = () => addRow("email-list", "email", "ornek@firma.com");
 
-// KAYIT İŞLEMİ (GÜNCELLENDİ)
 $("supplier-form").onsubmit = async (e) => {
   e.preventDefault();
   $("form-error").hidden = true;
@@ -410,13 +416,10 @@ $("supplier-form").onsubmit = async (e) => {
 
   try {
     const user = await ensureAnon();
-    console.log("Auth User UID:", user.uid); // Debug: Auth'un oturduğunu doğrula
     const uid = user.uid;
     const supplierId = randomId(20);
     const companyKey = normalizeCompanyKey(companyName);
 
-    // 1. Limit Kontrolü
-    console.log("Adım 1: Usage limit kontrolü...");
     const usageRef = doc(db, "usage", uid);
     await runTransaction(db, async (tx) => {
       const snap = await tx.get(usageRef);
@@ -425,8 +428,6 @@ $("supplier-form").onsubmit = async (e) => {
       else tx.set(usageRef, { count: 1, updatedAt: serverTimestamp() });
     });
 
-    // 2. Tekil Telefon Kontrolü
-    console.log("Adım 2: Telefon kilitleri kontrolü...");
     const keyIds = [];
     for (const phone of phones) {
       const keyId = `${companyKey}__${phone}`;
@@ -436,8 +437,6 @@ $("supplier-form").onsubmit = async (e) => {
       keyIds.push(keyId);
     }
 
-    // 3. VERİTABANINA İLK KAYIT (Katalog boş)
-    console.log("Adım 3: Suppliers belgesi oluşturuluyor...");
     const supplierDoc = {
       firstName, lastName, companyName, companyKey, taxOffice, taxNumber, website,
       phones, phoneKeys: phones, emails, country, city, district, address, products, notes,
@@ -446,8 +445,6 @@ $("supplier-form").onsubmit = async (e) => {
     };
     await setDoc(doc(db, "suppliers", supplierId), supplierDoc);
 
-    // 4. KATALOG YÜKLEME
-    console.log("Adım 4: Katalog yükleniyor...");
     const catalogs = [];
     for (const file of selectedFiles) {
       const safeName = file.name.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 60);
@@ -457,14 +454,10 @@ $("supplier-form").onsubmit = async (e) => {
       catalogs.push({ name: file.name.slice(0,120), size: file.size, contentType: file.type, storagePath: path, url: await getDownloadURL(sref) });
     }
 
-    // 5. DOSYALARI VERİTABANINA GÜNCELLE
     if (catalogs.length > 0) {
-      console.log("Adım 5: Katalog linkleri güncelleniyor...");
       await updateDoc(doc(db, "suppliers", supplierId), { catalogs: catalogs });
     }
 
-    // 6. TELEFON KİLİTLERİNİ YAZ
-    console.log("Adım 6: Telefon kilitleri yazılıyor...");
     for (const keyId of keyIds) {
       await setDoc(doc(db, "supplierKeys", keyId), { supplierId, createdAt: serverTimestamp() });
     }
@@ -472,7 +465,7 @@ $("supplier-form").onsubmit = async (e) => {
     showSuccess({ ...supplierDoc, catalogs });
     toast("Tedarikçi kaydınız başarıyla alındı.");
   } catch (err) {
-    console.error("Kayıt hatası detayı:", err); // Hatanın tam yerini konsolda gösterir
+    console.error(err);
     $("form-error").textContent = err.message || "Kayıt sırasında bir hata oluştu.";
     $("form-error").hidden = false;
     window.scrollTo({top:0, behavior:"smooth"});
@@ -504,7 +497,6 @@ $("another").onclick = () => {
   window.scrollTo({top:0, behavior:"smooth"});
 };
 
-// ... (SRV Paneli fonksiyonları ve Auth State Listener önceki kodla aynı) ...
 $("srv-entry").onclick = () => { $("srv-error").hidden = true; $("srv-password").value = ""; $("srv-dialog").showModal(); };
 $("srv-form").onsubmit = async (e) => {
   e.preventDefault();
