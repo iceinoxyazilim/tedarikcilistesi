@@ -8,45 +8,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-:root {
-  --primary: #005a9c; /* Kurumsal mavi */
-  --primary-dark: #00427a;
-  --bg: #f4f7f9;
-  --card: #ffffff;
-  --text: #1e293b;
-  --text-muted: #64748b;
-  --border: #e2e8f0;
-  --danger: #e11d48;
-  --success: #059669;
-}
+/* ... (Önceki CSS kodunuzun tamamı buraya gelecek, değişiklik yok) ... */
+:root { --primary: #005a9c; --primary-dark: #00427a; --bg: #f4f7f9; --card: #ffffff; --text: #1e293b; --text-muted: #64748b; --border: #e2e8f0; --danger: #e11d48; --success: #059669; }
 * { box-sizing: border-box; }
 body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
 h1, h2, h3 { margin: 0; font-weight: 600; }
-
-/* HEADER */
 .topbar { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-.topbar-inner { max-width: 900px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
+.topbar-inner { max-width: 900px; margin: 0 auto; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
 .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text); }
-.brand-logo { width: 44px; height: 44px; }
-.brand-text { display: flex; flex-direction: column; }
-.brand-name { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; color: var(--primary); line-height: 1.1; }
-.brand-sub { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+.brand-logo { height: 40px; width: auto; }
 .srv-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
 .srv-btn:hover { background: var(--bg); color: var(--text); }
-
-/* MAIN LAYOUT */
 .page { max-width: 900px; margin: 0 auto; padding: 30px 20px 80px; }
 .lede { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; text-align: center; }
-
-/* FORM CARD */
 .sheet { background: var(--card); border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05); overflow: hidden; }
 .block { padding: 28px 32px; border-bottom: 1px solid var(--border); }
 .block:last-child { border-bottom: none; }
 .block-title { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
 .block-num { background: #e0f2fe; color: var(--primary); font-weight: 700; font-size: 12px; padding: 4px 8px; border-radius: 6px; }
 .block-title h2 { font-size: 18px; color: var(--primary-dark); }
-
-/* INPUTS */
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 @media (max-width: 640px) { .split { grid-template-columns: 1fr; gap: 0; } }
 .field { display: block; margin-bottom: 16px; }
@@ -56,23 +36,17 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--p
 textarea { resize: vertical; min-height: 80px; }
 .hint { display: block; font-size: 12px; color: var(--text-muted); margin-top: 6px; }
 .err { display: block; font-size: 12px; color: var(--danger); margin-top: 6px; font-weight: 500; }
-
-/* BUTTONS */
 button { font-family: inherit; cursor: pointer; border-radius: 8px; font-weight: 600; transition: 0.2s; }
 button.primary { background: var(--primary); color: #fff; border: none; padding: 14px 24px; font-size: 15px; width: 100%; margin-top: 10px; }
 button.primary:hover { background: var(--primary-dark); }
 button.ghost { background: #f8fafc; border: 1px solid var(--border); color: var(--text); padding: 8px 14px; font-size: 13px; }
 button.ghost:hover { background: #f1f5f9; }
 button.text-btn { background: none; border: none; color: var(--primary); font-size: 13px; padding: 0; text-decoration: underline; }
-
-/* REPEAT ROWS (Telefon/E-posta) */
 .repeat { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
 .repeat-row { display: flex; gap: 10px; }
 .repeat-row input { flex: 1; }
 .repeat-row button { background: #fee2e2; color: var(--danger); border: none; padding: 0 16px; border-radius: 8px; font-size: 18px; }
 .repeat-row button:hover { background: #fecaca; }
-
-/* FILE UPLOAD */
 .drop { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed var(--border); border-radius: 12px; padding: 30px 20px; text-align: center; cursor: pointer; background: #f8fafc; transition: 0.2s; }
 .drop:hover, .drop.over { border-color: var(--primary); background: #e0f2fe; }
 .drop svg { width: 32px; height: 32px; color: var(--primary); margin-bottom: 12px; }
@@ -82,26 +56,18 @@ button.text-btn { background: none; border: none; color: var(--primary); font-si
 .files { list-style: none; padding: 0; margin: 12px 0 0; }
 .files li { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f1f5f9; border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
 .files button { color: var(--danger); background: none; border: none; font-weight: 600; }
-
-/* CONSENT */
 .consent { background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
 .consent-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 10px; }
 .consent-top p { margin: 0; font-size: 14px; }
 .check { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
 .check input { width: 18px; height: 18px; margin-top: 2px; }
 .check span { font-size: 14px; font-weight: 500; }
-
-/* ALERTS */
 .banner { background: #fee2e2; color: var(--danger); padding: 14px; border-radius: 8px; font-size: 14px; margin: 20px 0 0; border: 1px solid #fecaca; text-align: center; font-weight: 500; }
-
-/* SRV DASHBOARD */
 .srv-panel { background: var(--card); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
 .srv-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
 .srv-header h2 { color: var(--primary-dark); font-size: 22px; }
 .srv-header p { margin: 4px 0 0; font-size: 13px; color: var(--text-muted); }
 .search-box { width: 100%; margin-bottom: 20px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
-
-/* TABLE (Desktop) */
 .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; display: none; }
 @media (min-width: 769px) { .table-wrap { display: block; } }
 table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
@@ -109,23 +75,17 @@ th { background: #f8fafc; padding: 14px; font-weight: 600; color: var(--text-mut
 td { padding: 14px; border-bottom: 1px solid var(--border); }
 tbody tr { cursor: pointer; transition: 0.2s; }
 tbody tr:hover { background: #f8fafc; }
-
-/* CARDS (Mobile) */
 .cards { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
 @media (min-width: 769px) { .cards { display: none; } }
 .cards li { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
 .cards li strong { color: var(--primary); font-size: 16px; display: block; margin-bottom: 6px; }
 .cards li span { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 2px; }
-
-/* DIALOGS */
 dialog { border: none; border-radius: 16px; padding: 0; width: 100%; max-width: 600px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); background: var(--card); }
 dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); }
 .dialog-head { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .dialog-head h2 { font-size: 18px; color: var(--primary-dark); }
 .dialog-body { padding: 24px; max-height: 70vh; overflow-y: auto; }
 .dialog-body p { margin: 0 0 12px; font-size: 14px; line-height: 1.6; }
-
-/* LETTER (Success) */
 .letter { text-align: center; padding: 40px 20px; }
 .letter-icon { width: 64px; height: 64px; background: #dcfce7; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
 .letter h2 { font-size: 24px; color: var(--primary-dark); margin-bottom: 10px; }
@@ -134,7 +94,6 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
 .letter-details strong { display: block; font-size: 12px; text-transform: uppercase; color: var(--text-muted); margin-top: 12px; }
 .letter-details strong:first-child { margin-top: 0; }
 .letter-details span { display: block; font-size: 15px; font-weight: 500; margin-top: 2px; }
-
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 14px; z-index: 1000; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); animation: slideUp 0.3s ease; }
 .toast.error { background: var(--danger); }
 @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
@@ -145,16 +104,13 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="#">
-      <!-- İCEİNOX Penguen Logosu (SVG) -->
-      <svg class="brand-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="50" fill="#005a9c"/>
-        <path d="M65 25C65 25 58 20 45 22C35 23 30 35 30 42C30 50 35 55 42 62C35 68 28 72 28 82C28 88 32 90 38 88C42 86 48 78 50 72C52 78 58 86 62 88C68 90 72 88 72 82C72 72 65 68 58 62C65 55 70 50 70 42C70 35 65 25 65 25Z" fill="white"/>
-        <path d="M55 30C55 30 50 28 45 30C40 32 38 38 40 42C42 46 48 48 52 45C56 42 58 35 55 30Z" fill="#005a9c"/>
+      <svg class="brand-logo" viewBox="0 0 320 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="30" cy="30" r="24" fill="#005a9c"/>
+        <path d="M30 14C25 14 21 18 21 23C21 28 25 31 28 36C30 39 31 42 30 46C29 42 30 39 32 36C35 31 39 28 39 23C39 18 35 14 30 14Z" fill="white"/>
+        <circle cx="30" cy="22" r="3" fill="#005a9c"/>
+        <text x="65" y="30" font-family="Arial, sans-serif" font-weight="900" font-size="26" fill="#005a9c" letter-spacing="0.5">İCEİNOX</text>
+        <text x="65" y="46" font-family="Arial, sans-serif" font-weight="600" font-size="10" fill="#64748b" letter-spacing="1.5">COMMERCIAL REFRIGERATORS</text>
       </svg>
-      <div class="brand-text">
-        <span class="brand-name">İCEİNOX</span>
-        <span class="brand-sub">Commercial Refrigerators</span>
-      </div>
     </a>
     <button class="srv-btn" id="srv-entry">SRV Girişi</button>
   </div>
@@ -164,7 +120,6 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
   <p class="lede" id="lede">Lütfen tedarikçi bilgilerinizi eksiksiz doldurun. Kaydınız sadece İCEİNOX yetkilileri (SRV) tarafından görüntülenebilir.</p>
 
   <form class="sheet" id="supplier-form" novalidate>
-    <!-- BÖLÜM 01: Yetkili -->
     <section class="block">
       <div class="block-title"><span class="block-num">01</span><h2>Yetkili Bilgileri</h2></div>
       <div class="split">
@@ -177,7 +132,6 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
       </div>
     </section>
 
-    <!-- BÖLÜM 02: Firma -->
     <section class="block">
       <div class="block-title"><span class="block-num">02</span><h2>Firma Bilgileri</h2></div>
       <label class="field">
@@ -196,7 +150,6 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
       </div>
     </section>
 
-    <!-- BÖLÜM 03: Adres -->
     <section class="block">
       <div class="block-title"><span class="block-num">03</span><h2>Adres ve Konum</h2></div>
       <div class="split">
@@ -209,7 +162,6 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
       </div>
     </section>
 
-    <!-- BÖLÜM 04: Katalog ve Onay -->
     <section class="block">
       <div class="block-title"><span class="block-num">04</span><h2>Katalog ve Onay</h2></div>
       <label class="field">
@@ -250,7 +202,6 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
     </div>
   </form>
 
-  <!-- BAŞARILI EKRANI -->
   <article class="letter" id="letter-view" hidden>
     <div class="letter-icon">
       <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
@@ -261,7 +212,6 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
     <button class="ghost" type="button" id="another" style="width: 100%;">Yeni Bir Kayıt Oluştur</button>
   </article>
 
-  <!-- SRV GÖRÜNÜMÜ -->
   <section class="srv-panel" id="srv-view" hidden>
     <div class="srv-header">
       <div>
@@ -284,7 +234,6 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
   </section>
 </main>
 
-<!-- DIALOGLAR (Açılır Pencereler) -->
 <dialog id="kvkk-dialog">
   <div class="dialog-head"><h2>KVKK Aydınlatma Metni</h2><button class="ghost" onclick="document.getElementById('kvkk-dialog').close()">Kapat</button></div>
   <div class="dialog-body">
@@ -315,10 +264,9 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, runTransaction, collection, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, runTransaction, collection, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-/* ============ AYARLAR ============ */
 const firebaseConfig = {
   apiKey: "AIzaSyCxNyB1lb-Zs7ZFqrvRLZIHG7oR91T6DHM",
   authDomain: "tedarikcilist.firebaseapp.com",
@@ -355,18 +303,22 @@ const normalizeCompanyKey = (name) => (name || "").toLowerCase().replace(/\b(a\.
 const randomId = (n = 20) => { let s = ""; const b = new Uint8Array(n); crypto.getRandomValues(b); for (let i=0; i<n; i++) s += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"[b[i]%62]; return s; };
 
 async function ensureAnon() {
-  if (!auth.currentUser) {
-    try { await signInAnonymously(auth); }
-    catch (e) { throw new Error("Anonim giriş yapılamadı. Lütfen Firebase panelinden Anonymous girişini aktifleştirin."); }
+  if (auth.currentUser) return auth.currentUser;
+  try { 
+    await signInAnonymously(auth); 
+    await new Promise(resolve => setTimeout(resolve, 500)); // Race condition önlemi
+    return auth.currentUser; 
   }
-  return auth.currentUser;
+  catch (e) { 
+    throw new Error("Anonim giriş yapılamadı. Lütfen Firebase panelinden Anonymous girişini aktifleştirin."); 
+  }
 }
 async function isSrvUser() {
   const u = auth.currentUser;
   return u && u.email && u.email.toLowerCase() === SRV_EMAIL.toLowerCase();
 }
 
-/* ============ DOSYA YÜKLEME ============ */
+// ... (Dosya yükleme, form elemanları, KVKK ve diğer event listener'lar önceki kodla aynı) ...
 let selectedFiles = [];
 function handleFiles(files) {
   showErr("err-files", "");
@@ -392,15 +344,12 @@ const drop = $("drop-zone");
 ["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
 ["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
 drop.addEventListener("drop", e => handleFiles(e.dataTransfer.files));
-
 $("open-kvkk").onclick = () => {
   $("kvkk-dialog").showModal();
   $("kvkk-dialog").addEventListener("close", () => {
     if ($("kvkk").disabled) { $("kvkk").disabled = false; $("kvkk-hint").textContent = "Artık kutucuğu işaretleyebilirsiniz."; }
   }, { once: true });
 };
-
-/* ============ TELEFON / E-POSTA EKLEME ============ */
 function addRow(containerId, type, placeholder) {
   const list = $(containerId);
   if (list.children.length >= 8) return;
@@ -413,7 +362,7 @@ function addRow(containerId, type, placeholder) {
 $("add-phone").onclick = () => addRow("phone-list", "tel", "05xx xxx xx xx");
 $("add-email").onclick = () => addRow("email-list", "email", "ornek@firma.com");
 
-/* ============ KAYIT İŞLEMİ ============ */
+// KAYIT İŞLEMİ (GÜNCELLENDİ)
 $("supplier-form").onsubmit = async (e) => {
   e.preventDefault();
   $("form-error").hidden = true;
@@ -461,20 +410,23 @@ $("supplier-form").onsubmit = async (e) => {
 
   try {
     const user = await ensureAnon();
+    console.log("Auth User UID:", user.uid); // Debug: Auth'un oturduğunu doğrula
     const uid = user.uid;
     const supplierId = randomId(20);
     const companyKey = normalizeCompanyKey(companyName);
 
     // 1. Limit Kontrolü
+    console.log("Adım 1: Usage limit kontrolü...");
     const usageRef = doc(db, "usage", uid);
     await runTransaction(db, async (tx) => {
       const snap = await tx.get(usageRef);
-      if (snap.exists() && snap.data().count >= 10) throw new Error("Bu cihazdan maksimum kayıt limitine ulaşıldı.");
+      if (snap.exists() && snap.data().count >= 10) throw new Error("Bu cihazdan maksimum kayıt limitine ulaşıldı. Lütfen başka bir tarayıcı kullanın.");
       if (snap.exists()) tx.update(usageRef, { count: snap.data().count + 1, updatedAt: serverTimestamp() });
       else tx.set(usageRef, { count: 1, updatedAt: serverTimestamp() });
     });
 
     // 2. Tekil Telefon Kontrolü
+    console.log("Adım 2: Telefon kilitleri kontrolü...");
     const keyIds = [];
     for (const phone of phones) {
       const keyId = `${companyKey}__${phone}`;
@@ -484,7 +436,18 @@ $("supplier-form").onsubmit = async (e) => {
       keyIds.push(keyId);
     }
 
-    // 3. Dosya Yükleme
+    // 3. VERİTABANINA İLK KAYIT (Katalog boş)
+    console.log("Adım 3: Suppliers belgesi oluşturuluyor...");
+    const supplierDoc = {
+      firstName, lastName, companyName, companyKey, taxOffice, taxNumber, website,
+      phones, phoneKeys: phones, emails, country, city, district, address, products, notes,
+      catalogs: [],
+      kvkkAccepted: true, kvkkAcceptedAt: serverTimestamp(), createdAt: serverTimestamp(), createdBy: uid, keyIds
+    };
+    await setDoc(doc(db, "suppliers", supplierId), supplierDoc);
+
+    // 4. KATALOG YÜKLEME
+    console.log("Adım 4: Katalog yükleniyor...");
     const catalogs = [];
     for (const file of selectedFiles) {
       const safeName = file.name.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 60);
@@ -494,23 +457,22 @@ $("supplier-form").onsubmit = async (e) => {
       catalogs.push({ name: file.name.slice(0,120), size: file.size, contentType: file.type, storagePath: path, url: await getDownloadURL(sref) });
     }
 
-    // 4. Veritabanına Yazma
-    const supplierDoc = {
-      firstName, lastName, companyName, companyKey, taxOffice, taxNumber, website,
-      phones, phoneKeys: phones, emails, country, city, district, address, products, notes, catalogs,
-      kvkkAccepted: true, kvkkAcceptedAt: serverTimestamp(), createdAt: serverTimestamp(), createdBy: uid, keyIds
-    };
-    await setDoc(doc(db, "suppliers", supplierId), supplierDoc);
+    // 5. DOSYALARI VERİTABANINA GÜNCELLE
+    if (catalogs.length > 0) {
+      console.log("Adım 5: Katalog linkleri güncelleniyor...");
+      await updateDoc(doc(db, "suppliers", supplierId), { catalogs: catalogs });
+    }
 
-    // 5. Telefon Kilitlerini Yazma
+    // 6. TELEFON KİLİTLERİNİ YAZ
+    console.log("Adım 6: Telefon kilitleri yazılıyor...");
     for (const keyId of keyIds) {
       await setDoc(doc(db, "supplierKeys", keyId), { supplierId, createdAt: serverTimestamp() });
     }
 
-    showSuccess(supplierDoc);
+    showSuccess({ ...supplierDoc, catalogs });
     toast("Tedarikçi kaydınız başarıyla alındı.");
   } catch (err) {
-    console.error(err);
+    console.error("Kayıt hatası detayı:", err); // Hatanın tam yerini konsolda gösterir
     $("form-error").textContent = err.message || "Kayıt sırasında bir hata oluştu.";
     $("form-error").hidden = false;
     window.scrollTo({top:0, behavior:"smooth"});
@@ -542,7 +504,7 @@ $("another").onclick = () => {
   window.scrollTo({top:0, behavior:"smooth"});
 };
 
-/* ============ SRV PANELİ ============ */
+// ... (SRV Paneli fonksiyonları ve Auth State Listener önceki kodla aynı) ...
 $("srv-entry").onclick = () => { $("srv-error").hidden = true; $("srv-password").value = ""; $("srv-dialog").showModal(); };
 $("srv-form").onsubmit = async (e) => {
   e.preventDefault();
@@ -575,7 +537,6 @@ function fmtDate(ts) {
   return (ts.toDate ? ts.toDate() : new Date(ts)).toLocaleString("tr-TR");
 }
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-
 function renderRecords(list) {
   const rows = $("record-rows"), cards = $("record-cards");
   rows.innerHTML = ""; cards.innerHTML = "";
@@ -585,14 +546,12 @@ function renderRecords(list) {
     tr.innerHTML = `<td><strong>${escapeHtml(rec.companyName)}</strong></td><td>${escapeHtml(rec.firstName+" "+rec.lastName)}</td><td>${escapeHtml(rec.phones.join(", "))}</td><td>${escapeHtml(rec.city)}</td><td>${fmtDate(rec.createdAt)}</td>`;
     tr.onclick = () => showDetail(rec);
     rows.appendChild(tr);
-
     const li = document.createElement("li");
     li.innerHTML = `<strong>${escapeHtml(rec.companyName)}</strong><span>${escapeHtml(rec.firstName+" "+rec.lastName)}</span><span>${escapeHtml(rec.phones.join(", "))}</span><span>${escapeHtml(rec.city)} • ${fmtDate(rec.createdAt)}</span>`;
     li.onclick = () => showDetail(rec);
     cards.appendChild(li);
   });
 }
-
 function showDetail(rec) {
   $("detail-title").textContent = rec.companyName;
   const cats = (rec.catalogs || []).map(c => `<p><a href="${c.url}" target="_blank" style="color:var(--primary);">${escapeHtml(c.name)}</a></p>`).join("") || "<p>-</p>";
@@ -610,13 +569,11 @@ function showDetail(rec) {
   `;
   $("detail-dialog").showModal();
 }
-
 $("search").oninput = (e) => {
   const q = e.target.value.toLowerCase().trim();
   if (!q) return renderRecords(recordsCache);
   renderRecords(recordsCache.filter(r => [r.companyName, r.firstName, r.lastName, r.city, ...(r.phones||[])].join(" ").toLowerCase().includes(q)));
 };
-
 onAuthStateChanged(auth, async (user) => {
   if (!user) { ensureAnon().catch(e => toast(e.message, true)); return; }
   if (await isSrvUser()) {
