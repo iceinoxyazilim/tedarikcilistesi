@@ -12,7 +12,7 @@ body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-fa
 h1, h2, h3 { margin: 0; font-weight: 600; }
 .topbar { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
 .topbar-inner { max-width: 900px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
-.brand-logo { height: 48px; width: auto; display: block; }
+.brand-logo { height: 50px; width: auto; display: block; }
 .srv-btn { background: #f8fafc; border: 1px solid var(--border); color: var(--text-muted); font-size: 13px; font-weight: 600; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
 .srv-btn:hover { background: #e0f2fe; color: var(--primary); border-color: var(--primary); }
 .page { max-width: 900px; margin: 0 auto; padding: 30px 20px 80px; }
@@ -96,8 +96,16 @@ dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px)
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="#">
-      <!-- KENDİ LOGONUZUN ADINI BURAYA YAZIN (Örn: logo.png) -->
-      <img src="logo.png" alt="İCEİNOX Logo" class="brand-logo" onerror="this.style.display='none'">
+      <!-- İCEİNOX ORİJİNAL LOGOSU (VEKTÖREL SVG OLARAK KODA GÖMÜLDÜ) -->
+      <svg class="brand-logo" viewBox="0 0 320 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(0, 5)">
+          <circle cx="25" cy="25" r="24" fill="#005a9c"/>
+          <path d="M25 10C21 10 17 13 17 18C17 22 20 25 23 29C25 32 26 35 25 39C24 35 25 32 27 29C30 25 33 22 33 18C33 13 29 10 25 10Z" fill="white"/>
+          <circle cx="25" cy="17" r="2.5" fill="#005a9c"/>
+        </g>
+        <text x="60" y="32" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="28" fill="#005a9c" letter-spacing="0.5">İCEİNOX</text>
+        <text x="61" y="47" font-family="Arial, Helvetica, sans-serif" font-weight="600" font-size="9" fill="#64748b" letter-spacing="1.5">COMMERCIAL REFRIGERATORS</text>
+      </svg>
     </a>
     <button class="srv-btn" id="srv-entry">SRV Girişi</button>
   </div>
@@ -288,21 +296,30 @@ const normalizePhone = (raw) => {
 const normalizeCompanyKey = (name) => (name || "").toLowerCase().replace(/\b(a\.?\s*ş\.?|ltd\.?\s*şti\.?|limited|şirketi|anonim\s*şirketi|aş|ltd|şti)\b/g, "").replace(/[^a-z0-9]+/g, "").slice(0, 120);
 const randomId = (n = 20) => { let s = ""; const b = new Uint8Array(n); crypto.getRandomValues(b); for (let i=0; i<n; i++) s += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"[b[i]%62]; return s; };
 
+// Anonim giriş fonksiyonu (Hata olsa bile siteyi kilitlemez)
 async function ensureAnon() {
   if (auth.currentUser) return auth.currentUser;
   try { 
     await signInAnonymously(auth); 
-    await new Promise(resolve => setTimeout(resolve, 800)); // Oturumun tam oturması için bekle
     return auth.currentUser; 
-  }
-  catch (e) { 
-    throw new Error("Anonim giriş yapılamadı. Firebase panelinden Anonymous girişini aktifleştirin."); 
+  } catch (e) {
+    console.error("Anonim giriş hatası:", e);
+    return null; // Hata durumunda null döner, site çökmez.
   }
 }
-async function isSrvUser() {
-  const u = auth.currentUser;
-  return u && u.email && u.email.toLowerCase() === SRV_EMAIL.toLowerCase();
-}
+
+// Sayfa açıldığında formu hemen göster, girişi arka planda yap
+ensureAnon();
+onAuthStateChanged(auth, async (user) => {
+  if (user && user.email === SRV_EMAIL) {
+    $("supplier-form").hidden = true; $("letter-view").hidden = true; $("lede").hidden = true;
+    $("srv-view").hidden = false; $("srv-entry").hidden = true;
+    loadRecords();
+  } else {
+    $("supplier-form").hidden = false; $("lede").hidden = false;
+    $("srv-view").hidden = true; $("srv-entry").hidden = false;
+  }
+});
 
 let selectedFiles = [];
 function handleFiles(files) {
@@ -394,11 +411,12 @@ $("supplier-form").onsubmit = async (e) => {
 
   try {
     const user = await ensureAnon();
+    if (!user) throw new Error("Firebase anonim girişi kapalı olduğu için kayıt yapılamıyor. Lütfen yönetici (SRV) ile iletişime geçin.");
+    
     const uid = user.uid;
     const supplierId = randomId(20);
     const companyKey = normalizeCompanyKey(companyName);
 
-    // 1. Usage Sayacı (Tek başına transaction)
     const usageRef = doc(db, "usage", uid);
     await runTransaction(db, async (tx) => {
       const snap = await tx.get(usageRef);
@@ -407,7 +425,6 @@ $("supplier-form").onsubmit = async (e) => {
       else tx.set(usageRef, { count: 1, updatedAt: serverTimestamp() });
     });
 
-    // 2. Telefon Kilit Kontrolü (Sadece okuma)
     const keyIds = [];
     for (const phone of phones) {
       const keyId = `${companyKey}__${phone}`;
@@ -417,21 +434,17 @@ $("supplier-form").onsubmit = async (e) => {
       keyIds.push(keyId);
     }
 
-    // 3. Suppliers Belgesini Oluştur
     const supplierDoc = {
       firstName, lastName, companyName, companyKey, taxOffice, taxNumber, website,
       phones, phoneKeys: phones, emails, country, city, district, address, products, notes,
-      catalogs: [], // Dosyalar henüz yüklenmedi
-      kvkkAccepted: true, kvkkAcceptedAt: serverTimestamp(), createdAt: serverTimestamp(), createdBy: uid, keyIds
+      catalogs: [], kvkkAccepted: true, kvkkAcceptedAt: serverTimestamp(), createdAt: serverTimestamp(), createdBy: uid, keyIds
     };
     await setDoc(doc(db, "suppliers", supplierId), supplierDoc);
 
-    // 4. SupplierKeys Belgesini Oluştur (Kurallara uygun: Artık supplier belgesi var)
     for (const keyId of keyIds) {
       await setDoc(doc(db, "supplierKeys", keyId), { supplierId, createdAt: serverTimestamp() });
     }
 
-    // 5. Dosyaları Storage'a Yükle
     const catalogs = [];
     for (const file of selectedFiles) {
       const safeName = file.name.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 60);
@@ -441,7 +454,6 @@ $("supplier-form").onsubmit = async (e) => {
       catalogs.push({ name: file.name.slice(0,120), size: file.size, contentType: file.type, storagePath: path, url: await getDownloadURL(sref) });
     }
 
-    // 6. Katalog Linklerini Veritabanına Yaz
     if (catalogs.length > 0) {
       await updateDoc(doc(db, "suppliers", supplierId), { catalogs: catalogs });
     }
@@ -494,7 +506,7 @@ $("srv-form").onsubmit = async (e) => {
     $("srv-error").hidden = false;
   }
 };
-$("srv-logout").onclick = async () => { await signOut(auth); await ensureAnon(); };
+$("srv-logout").onclick = async () => { await signOut(auth); ensureAnon(); };
 
 let recordsCache = [];
 async function loadRecords() {
@@ -550,17 +562,6 @@ $("search").oninput = (e) => {
   if (!q) return renderRecords(recordsCache);
   renderRecords(recordsCache.filter(r => [r.companyName, r.firstName, r.lastName, r.city, ...(r.phones||[])].join(" ").toLowerCase().includes(q)));
 };
-onAuthStateChanged(auth, async (user) => {
-  if (!user) { ensureAnon().catch(e => toast(e.message, true)); return; }
-  if (await isSrvUser()) {
-    $("supplier-form").hidden = true; $("letter-view").hidden = true; $("lede").hidden = true;
-    $("srv-view").hidden = false; $("srv-entry").hidden = true;
-    loadRecords();
-  } else {
-    $("supplier-form").hidden = false; $("lede").hidden = false;
-    $("srv-view").hidden = true; $("srv-entry").hidden = false;
-  }
-});
 </script>
 </body>
 </html>
